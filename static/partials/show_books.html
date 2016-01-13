@@ -16,15 +16,21 @@
         </div>
     </div>
 
-    <a href="#/books/create" >
-        <button class="btn btn-primary pull-left">
-            <i class="glyphicon glyphicon-plus"></i> Add Book
-        </button>
-    </a>
-    <button ng-click="queryBooks();" class="btn btn-primary pull-right">
-        <i class="glyphicon glyphicon-search"></i> Search
-    </button>
+    <form class="form-inline" name="filterForm">
+        <div class="form-group-condensed">
+            <label for="search">Enter book name or Id:</label>
+            <input name="search" id="search" type="text" ng-model="searchText" class="form-control"/>
 
+            <button ng-click="queryBooks();" class="btn btn-primary">
+                <i class="glyphicon glyphicon-search"></i> Search
+            </button>
+            <a href="#/books/create" >
+                <button class="btn btn-primary pull-right">
+                    <i class="glyphicon glyphicon-plus"></i> Add Book
+                </button>
+            </a>
+        </div>
+    </form>
     <div ng-show="submitted && books.length == 0">
         <h4>No matching results.</h4>
     </div>
