@@ -36,6 +36,8 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Language</th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -44,6 +46,20 @@
                 <td>{{book.title}}</td>
                 <td>{{book.author}}</td>
                 <td>{{book.language}}</td>
+                <td>
+                    <a href="#/books/edit" >
+                        <button class="btn btn-primary btn-xs">
+                        <i class="glyphicon glyphicon-pencil"></i>Edit
+                        </button>
+                    </a>
+                </td>
+                <td>
+                    <a href="#/books/delete" >
+                        <button class="btn btn-primary btn-xs">
+                        <i class="glyphicon glyphicon-trash"></i>Delete
+                        </button>
+                    </a>
+                </td>
             </tr>
             </tbody>
         </table>
