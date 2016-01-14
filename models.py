@@ -63,19 +63,19 @@ class StudentForms(messages.Message):
 #Checkout models
 class Checkout(ndb.Model):
     """Checkout - record for each checkout"""
-    student_id = ndb.StringProperty()
-    book_Id = ndb.StringProperty()
-    checkout_date = ndb.DateProperty()
-    due_date = ndb.DateProperty()
+    studentId = ndb.StringProperty()
+    bookId = ndb.StringProperty()
+    checkoutDate = ndb.DateProperty()
+    dueDate = ndb.DateProperty()
 
 class CheckoutForm(messages.Message):
     """CheckoutForm - Checkout outbound form message"""
-    student_id = messages.StringField(1)
-    book_Id = messages.StringField(2)
-    checkout_date = messages.StringField(3)
-    due_date = messages.StringField(4)
+    studentId = messages.StringField(1)
+    bookId = messages.StringField(2)
+    checkoutDate = messages.StringField(3)
+    dueDate = messages.StringField(4)
     websafeKey = messages.StringField(5)
-    student_name = messages.StringField(6)
+    studentName = messages.StringField(6)
     title = messages.StringField(7)
     author = messages.StringField(8)
     language = messages.StringField(9)
@@ -84,3 +84,7 @@ class CheckoutForms(messages.Message):
     """CheckoutForms - Multiple checkouts outbound form message"""
     items = messages.MessageField(CheckoutForm, 1, repeated = True)
 
+class CheckoutRequestForm(messages.Message):
+    """CheckoutRequestForm - for checking out or returning book"""
+    studentKey = messages.StringField(1)
+    bookId = messages.StringField(2)

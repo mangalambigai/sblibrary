@@ -423,6 +423,127 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
 
 /**
  * @ngdoc controller
+ * @name CheckoutCtrl
+ *
+ * @description
+ * A controller used for Checkout page.
+ */
+libraryApp.controllers.controller('CheckoutCtrl',
+    function ($scope, $log, $routeParams, oauth2Provider, HTTP_ERRORS) {
+        /**
+         * Holds the checkouts currently displayed in the page.
+         * @type {Array}
+         */
+        $scope.checkouts = [];
+        /**
+         * Holds the books currently available to display in the page.
+         * @type {Array}
+         */
+        $scope.books = [];
+
+        $scope.init = function () {
+            $scope.submitted = false;
+            $scope.loading = true;
+
+            //get checkouts for this student
+            gapi.client.sblibrary.getCheckouts().
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to query checkouts : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Query succeeded : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+
+                            $scope.students = [];
+                            angular.forEach(resp.items, function (checkout) {
+                                $scope.checkouts.push(checkout);
+                            });
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        }
+
+        //show books for checkout
+        $scope.queryBooks = function () {
+            $scope.submitted = false;
+            $scope.loading = true;
+            gapi.client.sblibrary.getBooks().
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to query books : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Query succeeded : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+
+                            $scope.books = [];
+                            angular.forEach(resp.items, function (book) {
+                                $scope.books.push(book);
+                            });
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        }
+
+        $scope.checkout = function(sbId) {
+            $scope.submitted = false;
+            $scope.loading = true;
+
+            //checkout this book
+            gapi.client.sblibrary.checkoutBook({
+                    studentKey: $routeParams.websafeKey,
+                    bookId: sbId}).
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to query checkouts : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Query succeeded : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+
+                            $scope.students = [];
+                            angular.forEach(resp.items, function (checkout) {
+                                $scope.checkouts.push(checkout);
+                            });
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        }
+    }
+);
+/**
+ * @ngdoc controller
  * @name ShowCheckoutsCtrl
  *
  * @description

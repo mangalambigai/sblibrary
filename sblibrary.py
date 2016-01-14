@@ -6,7 +6,7 @@ sblibrary.py -- Library server-side Python App Engine API;
 
 author -- mangalambigais@gmail.com
 """
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 import endpoints
 from protorpc import messages
@@ -17,7 +17,7 @@ from google.appengine.ext import ndb
 
 from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
-from models import Checkout, CheckoutForm, CheckoutForms
+from models import Checkout, CheckoutForm, CheckoutForms, CheckoutRequestForm
 
 from settings import WEB_CLIENT_ID
 
@@ -28,6 +28,7 @@ GET_REQUEST = endpoints.ResourceContainer(
     message_types.VoidMessage,
     websafeKey=messages.StringField(1),
 )
+
 @endpoints.api( name='sblibrary',
                 version='v1',
                 allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
@@ -151,11 +152,26 @@ class SbLibraryApi(remote.Service):
 
     #Endpoints for checkouts
 
-    @endpoints.method(CheckoutForm, CheckoutForm,
+    @endpoints.method(CheckoutRequestForm, CheckoutForm,
         path='checkout', http_method='POST', name='checkoutBook')
     def checkoutBook(self, request):
         """checkout a book"""
-        return request
+        today = date.today()
+        duedate = today + timedelta(days=28)
+        parentKey = ndb.Key(urlsafe= request.studentKey)
+        student = parentKey.get()
+        checkoutId = Checkout.allocate_ids(size=1, parent=parentKey)[0]
+        checkoutKey = ndb.Key(Checkout, checkoutId, parent = parentKey)
+
+        checkout = Checkout(
+            key = checkoutKey,
+            studentId = student.sbId,
+            bookId = request.bookId,
+            checkoutDate = today,
+            dueDate = duedate
+        )
+        checkout.put()
+        return self._copyCheckoutToForm(checkout)
 
     @endpoints.method(CheckoutForm, CheckoutForm,
         path='return', http_method='POST', name='returnBook')
@@ -166,10 +182,10 @@ class SbLibraryApi(remote.Service):
     def _copyCheckoutToForm(self, checkout):
         """copy checkout model to form"""
         cf = CheckoutForm()
-        cf.student_id = checkout.student_id
-        cf.book_id = checkout.book_id
-        cf.checkout_date = checkout.checkout_date
-        cf.due_date = checkout.due_date
+        cf.studentId = checkout.studentId
+        cf.bookId = checkout.bookId
+        cf.checkoutDate = str(checkout.checkoutDate)
+        cf.dueDate = str(checkout.dueDate)
         return cf
 
 

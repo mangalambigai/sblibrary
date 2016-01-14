@@ -44,6 +44,10 @@ var app = angular.module('sbLibraryApp',
                     templateUrl: '/partials/show_checkouts.html',
                     controller: 'ShowCheckoutsCtrl'
                 }).
+                when('/checkout/:websafeKey', {
+                    templateUrl: '/partials/checkout.html',
+                    controller: 'CheckoutCtrl'
+                }).
                 when('/', {
                     templateUrl: '/partials/home.html'
                 }).
