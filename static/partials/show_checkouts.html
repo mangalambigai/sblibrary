@@ -46,7 +46,9 @@
                 <td>{{checkout.checkoutDate}}</td>
                 <td>{{checkout.dueDate}}</td>
                 <td>
-                    <button class="btn btn-xs btn-primary">Check In</button>
+                    <button class="btn btn-xs btn-primary" ng-click="checkin(checkout.websafeKey)">
+                        Check In
+                    </button>
                 </td>
                 <td>
                 </td>

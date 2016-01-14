@@ -163,21 +163,29 @@ class SbLibraryApi(remote.Service):
         checkoutId = Checkout.allocate_ids(size=1, parent=parentKey)[0]
         checkoutKey = ndb.Key(Checkout, checkoutId, parent = parentKey)
 
+        book = ndb.Key(Book, request.bookId).get()
+
         checkout = Checkout(
             key = checkoutKey,
             studentId = student.sbId,
             bookId = request.bookId,
             checkoutDate = today,
-            dueDate = duedate
+            dueDate = duedate,
+            studentName = student.name,
+            title = book.title,
+            author = book.author,
+            language = book.language
         )
         checkout.put()
         return self._copyCheckoutToForm(checkout)
 
-    @endpoints.method(CheckoutForm, CheckoutForm,
+    @endpoints.method(GET_REQUEST, message_types.VoidMessage,
         path='return', http_method='POST', name='returnBook')
     def returnBook(self, request):
         """return a book"""
-        return request
+        checkout_key = ndb.Key(urlsafe=request.websafeKey)
+        checkout_key.delete()
+        return message_types.VoidMessage()
 
     def _copyCheckoutToForm(self, checkout):
         """copy checkout model to form"""
@@ -186,6 +194,11 @@ class SbLibraryApi(remote.Service):
         cf.bookId = checkout.bookId
         cf.checkoutDate = str(checkout.checkoutDate)
         cf.dueDate = str(checkout.dueDate)
+        cf.studentName = checkout.studentName
+        cf.title = checkout.title
+        cf.author = checkout.author
+        cf.language = checkout.language
+        cf.websafeKey = checkout.key.urlsafe()
         return cf
 
 

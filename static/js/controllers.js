@@ -473,7 +473,33 @@ libraryApp.controllers.controller('CheckoutCtrl',
                     });
                 }
             );
-        }
+        };
+
+        $scope.checkin = function(checkoutKey) {
+            $scope.submitted = false;
+            $scope.loading = true;
+            gapi.client.sblibrary.returnBook({websafeKey: checkoutKey}).
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to return book : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Return succeeded : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        };
 
         //show books for checkout
         $scope.queryBooks = function () {
@@ -588,6 +614,31 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                 }
             );
         }
+        $scope.checkin = function(checkoutKey) {
+            $scope.submitted = false;
+            $scope.loading = true;
+            gapi.client.sblibrary.returnBook({websafeKey: checkoutKey}).
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to return book : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Return succeeded : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        };
 
     }
 );

@@ -19,6 +19,7 @@ class Book(ndb.Model):
     title = ndb.StringProperty()
     author = ndb.StringProperty()
     language = ndb.StringProperty()
+    studentKey = ndb.StringProperty()
 
 class Language(messages.Enum):
     """Language - enumeration value"""
@@ -35,6 +36,7 @@ class BookForm(messages.Message):
     author = messages.StringField(3)
     language = messages.StringField(4)
     websafeKey = messages.StringField(5)
+    studentKey = messages.StringField(6)
 
 class BookForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
@@ -67,6 +69,10 @@ class Checkout(ndb.Model):
     bookId = ndb.StringProperty()
     checkoutDate = ndb.DateProperty()
     dueDate = ndb.DateProperty()
+    studentName = ndb.StringProperty()
+    title = ndb.StringProperty()
+    author = ndb.StringProperty()
+    language = ndb.StringProperty()
 
 class CheckoutForm(messages.Message):
     """CheckoutForm - Checkout outbound form message"""
