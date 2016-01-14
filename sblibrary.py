@@ -17,6 +17,7 @@ from google.appengine.ext import ndb
 
 from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
+from models import Checkout, CheckoutForm, CheckoutForms
 
 from settings import WEB_CLIENT_ID
 
@@ -34,7 +35,7 @@ GET_REQUEST = endpoints.ResourceContainer(
 class SbLibraryApi(remote.Service):
     """SB Library API v0.1"""
 
-    #Books#
+    #Endpoints for Books
     def _copyBookToForm(self, book):
         """Copy relevant fields from Book to BookForm."""
         bf = BookForm()
@@ -91,7 +92,7 @@ class SbLibraryApi(remote.Service):
         book.put()
         return request
 
-    #Students#
+    #End points for Students
     def _copyStudentToForm(self, student):
         """Copy relevant fields from Student to StudentForm."""
         sf = StudentForm()
@@ -124,6 +125,62 @@ class SbLibraryApi(remote.Service):
             cellphone = request.cellphone)
         student.put()
         return request
+
+    @endpoints.method(GET_REQUEST, StudentForm,
+        path='student/{websafeKey}', http_method='GET', name='getStudent')
+    def getStudent(self, request):
+        """get a Student"""
+        student = ndb.Key(urlsafe = request.websafeKey).get()
+        if not student:
+            raise endpoints.NotFoundException(
+                'No book found with key: %s' % request.websafeKey)
+        return self._copyStudentToForm(student)
+
+
+    @endpoints.method(StudentForm, StudentForm,
+            path='student', http_method='POST', name='editStudent')
+    def editStudent(self, request):
+        """edit a student."""
+        s_key = ndb.Key(Student, request.sbId)
+        student = s_key.get()
+        student.name = request.name
+        student.email = request.email
+        student.cellphone = request.cellphone
+        student.put()
+        return request
+
+    #Endpoints for checkouts
+
+    @endpoints.method(CheckoutForm, CheckoutForm,
+        path='checkout', http_method='POST', name='checkoutBook')
+    def checkoutBook(self, request):
+        """checkout a book"""
+        return request
+
+    @endpoints.method(CheckoutForm, CheckoutForm,
+        path='return', http_method='POST', name='returnBook')
+    def returnBook(self, request):
+        """return a book"""
+        return request
+
+    def _copyCheckoutToForm(self, checkout):
+        """copy checkout model to form"""
+        cf = CheckoutForm()
+        cf.student_id = checkout.student_id
+        cf.book_id = checkout.book_id
+        cf.checkout_date = checkout.checkout_date
+        cf.due_date = checkout.due_date
+        return cf
+
+
+    @endpoints.method(message_types.VoidMessage, CheckoutForms,
+        path='checkout', http_method='GET', name='getCheckouts')
+    def getCheckouts(self, request):
+        """get checkout records"""
+        q = Checkout.query()
+        return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
+            for checkout in q])
+
 
 
 # registers API
