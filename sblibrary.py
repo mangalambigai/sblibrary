@@ -198,6 +198,14 @@ class SbLibraryApi(remote.Service):
             for checkout in q])
 
 
+    @endpoints.method( GET_REQUEST, CheckoutForms,
+        path='studentcheckout', http_method='GET', name='getStudentCheckouts')
+    def getStudentCheckouts(self, request):
+        """get checkout records"""
+        student_key = ndb.Key(urlsafe=request.websafeKey)
+        q = Checkout.query(ancestor = student_key)
+        return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
+            for checkout in q])
 
 # registers API
 api = endpoints.api_server([SbLibraryApi])

@@ -446,7 +446,8 @@ libraryApp.controllers.controller('CheckoutCtrl',
             $scope.loading = true;
 
             //get checkouts for this student
-            gapi.client.sblibrary.getCheckouts().
+            gapi.client.sblibrary.
+                getStudentCheckouts({websafeKey: $routeParams.websafeKey}).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
