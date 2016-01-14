@@ -32,6 +32,7 @@ class BookForm(messages.Message):
     title = messages.StringField(2)
     author = messages.StringField(3)
     language = messages.StringField(4)
+    websafeKey = messages.StringField(5)
 
 class BookForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
@@ -50,6 +51,7 @@ class StudentForm(messages.Message):
     name = messages.StringField(2)
     email = messages.StringField(3)
     cellphone = messages.StringField(4)
+    websafeKey = messages.StringField(5)
 
 class StudentForms(messages.Message):
     """BookForms - Multiple books outbound form message"""

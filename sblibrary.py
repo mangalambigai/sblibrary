@@ -23,6 +23,10 @@ from settings import WEB_CLIENT_ID
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 
+GET_REQUEST = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    websafeKey=messages.StringField(1),
+)
 @endpoints.api( name='sblibrary',
                 version='v1',
                 allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
@@ -38,6 +42,7 @@ class SbLibraryApi(remote.Service):
         bf.author = book.author
         bf.sbId = book.sbId
         bf.language = book.language
+        bf.websafeKey = book.key.urlsafe()
         bf.check_initialized()
         return bf
 
@@ -63,6 +68,17 @@ class SbLibraryApi(remote.Service):
         book.put()
         return request
 
+    @endpoints.method(GET_REQUEST, BookForm,
+        path='book/{websafeKey}', http_method='GET', name='getBook')
+    def getBook(self, request):
+        """get a Book"""
+        book = ndb.Key(urlsafe = request.websafeKey).get()
+        if not book:
+            raise endpoints.NotFoundException(
+                'No book found with key: %s' % request.websafeKey)
+        return self._copyBookToForm(book)
+
+
     @endpoints.method(BookForm, BookForm,
             path='book', http_method='POST', name='editBook')
     def editBook(self, request):
@@ -78,13 +94,14 @@ class SbLibraryApi(remote.Service):
     #Students#
     def _copyStudentToForm(self, student):
         """Copy relevant fields from Student to StudentForm."""
-        bf = StudentForm()
-        bf.name = student.name
-        bf.email = student.email
-        bf.cellphone = student.cellphone
-        bf.sbId = student.sbId
-        bf.check_initialized()
-        return bf
+        sf = StudentForm()
+        sf.name = student.name
+        sf.email = student.email
+        sf.cellphone = student.cellphone
+        sf.sbId = student.sbId
+        sf.websafeKey = student.key.urlsafe()
+        sf.check_initialized()
+        return sf
 
     @endpoints.method(message_types.VoidMessage, StudentForms,
             path='students', http_method='GET', name='getStudents')

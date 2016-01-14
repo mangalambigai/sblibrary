@@ -24,6 +24,10 @@ var app = angular.module('sbLibraryApp',
                     templateUrl: '/partials/create_book.html',
                     controller: 'CreateBookCtrl'
                 }).
+                when('/books/edit/:websafeKey', {
+                    templateUrl: '/partials/edit_book.html',
+                    controller: 'EditBookCtrl'
+                }).
                 when('/students', {
                     templateUrl: '/partials/show_students.html',
                     controller: 'ShowStudentsCtrl'
