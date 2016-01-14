@@ -68,20 +68,15 @@ libraryApp.controllers.controller('CreateBookCtrl',
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query books : ' + errorMessage;
+                            $scope.messages = 'Failed to create book : ' + errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Book created successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-
-                            $scope.books = [];
-                            angular.forEach(resp.items, function (book) {
-                                $scope.books.push(book);
-                            });
                         }
                         $scope.submitted = true;
                     });
@@ -186,7 +181,7 @@ libraryApp.controllers.controller('CreateStudentCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Added student successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
