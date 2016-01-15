@@ -1,0 +1,5 @@
+cron:
+- description: Send reminder mails for overdue books every week
+  url: /crons/send_reminder
+  schedule: every saturday 09:00
+

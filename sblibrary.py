@@ -220,5 +220,30 @@ class SbLibraryApi(remote.Service):
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in q])
 
+    @staticmethod
+    def _getOverDue():
+        """sets the overdue users to memcache"""
+        #overdueCheckouts = Checkout.query(Checkout.duedate < date.today()) \
+        overdueCheckouts = Checkout.query() \
+            .fetch( projection=[Checkout.title, Checkout.studentId] )
+
+        #create a dictionary so we can consolidate the books per email
+        overDueDict = {}
+        for checkout in overdueCheckouts:
+            email = ndb.Key(Student,checkout.studentId).get().email,
+            if not email in overDueDict:
+                overDueDict[email] = []
+            overDueDict[email].append(checkout.title)
+
+        overDueArr = []
+        for k, v in overDueDict.iteritems():
+            message = 'The following books are overdue:'+ \
+                ' Please return them to Shishu Bharathi ASAP:'
+            for book in v:
+                message += book + '\n'
+            overDueArr.append((k, message))
+
+        return overDueArr
+
 # registers API
 api = endpoints.api_server([SbLibraryApi])

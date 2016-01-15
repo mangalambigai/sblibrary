@@ -30,6 +30,10 @@ handlers:       #static then dynamic
   script: sblibrary.api
   secure: always
 
+- url: /crons/send_reminder
+  script: main.app
+  login: admin
+
 libraries:
 
 - name: endpoints
