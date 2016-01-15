@@ -195,8 +195,10 @@ libraryApp.controllers.controller('ShowBooksCtrl',
         $scope.queryBooks = function () {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.getBooks().
-                execute(function (resp) {
+
+            gapi.client.sblibrary.queryBooks(
+                {sbId: $scope.searchId, name: $scope.searchTitle}
+                ).execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
                         if (resp.error) {
@@ -390,8 +392,10 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
         $scope.queryStudents = function () {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.getStudents().
-                execute(function (resp) {
+            //gapi.client.sblibrary.getStudents().
+            gapi.client.sblibrary.queryStudents(
+                {sbId: $scope.searchId, name: $scope.searchName}
+                ).execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
                         if (resp.error) {
@@ -505,8 +509,10 @@ libraryApp.controllers.controller('CheckoutCtrl',
         $scope.queryBooks = function () {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.getBooks().
-                execute(function (resp) {
+
+            gapi.client.sblibrary.queryBooks(
+                {sbId: $scope.searchId, name: $scope.searchTitle}
+                ).execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
                         if (resp.error) {

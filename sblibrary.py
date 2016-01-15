@@ -29,6 +29,12 @@ GET_REQUEST = endpoints.ResourceContainer(
     websafeKey=messages.StringField(1),
 )
 
+QUERY_REQUEST = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    sbId=messages.StringField(1),
+    name=messages.StringField(2)
+)
+
 @endpoints.api( name='sblibrary',
                 version='v1',
                 allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
@@ -53,6 +59,23 @@ class SbLibraryApi(remote.Service):
     def getBooks(self, request):
         """Return all books."""
         q = Book.query()
+        return BookForms(items = [self._copyBookToForm(book) \
+            for book in q])
+
+    @endpoints.method(QUERY_REQUEST, BookForms,
+            path='querybooks', http_method='GET', name='queryBooks')
+    def queryBooks(self, request):
+        """Return books based on query."""
+        q = Book.query()
+        if request.sbId:
+            q = q.filter( ndb.AND(
+                Book.sbId >= request.sbId,
+                Book.sbId < request.sbId + 'z' ))
+        elif request.name:
+            q = q.filter( ndb.AND(
+                Book.title >= request.name,
+                Book.title < request.name + 'z'))
+
         return BookForms(items = [self._copyBookToForm(book) \
             for book in q])
 
@@ -110,6 +133,23 @@ class SbLibraryApi(remote.Service):
     def getStudents(self, request):
         """Return all students."""
         q = Student.query()
+        return StudentForms(items = [self._copyStudentToForm(student) \
+            for student in q])
+
+    @endpoints.method(QUERY_REQUEST, StudentForms,
+            path='queryStudents', http_method='GET', name='queryStudents')
+    def queryStudents(self, request):
+        """Return student based on query."""
+        q = Student.query()
+        if request.sbId:
+            q = q.filter( ndb.AND(
+                Student.sbId >= request.sbId,
+                Student.sbId < request.sbId + 'z' ))
+        elif request.name:
+            q = q.filter( ndb.AND(
+                Student.name >= request.name,
+                Student.name < request.name + 'z'))
+
         return StudentForms(items = [self._copyStudentToForm(student) \
             for student in q])
 

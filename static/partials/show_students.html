@@ -18,8 +18,11 @@
 
     <form class="form-inline" name="filterForm">
         <div class="form-group-condensed">
-            <label for="search">Enter student name or Id:</label>
-            <input name="search" id="search" type="text" ng-model="searchText" class="form-control"/>
+            <label for="searchId">Enter student Id:</label>
+            <input name="searchId" id="searchId" type="text" ng-model="searchId" class="form-control"/>
+
+            <label for="searchName">Enter student Name:</label>
+            <input name="searchName" id="searchName" type="text" ng-model="searchName" class="form-control"/>
 
             <button ng-click="queryStudents();" class="btn btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search

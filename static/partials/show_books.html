@@ -18,12 +18,16 @@
 
     <form class="form-inline" name="filterForm">
         <div class="form-group-condensed">
-            <label for="search">Enter book name or Id:</label>
-            <input name="search" id="search" type="text" ng-model="searchText" class="form-control"/>
+            <label for="idsearch">Enter Id:</label>
+            <input name="idsearch" id="idsearch" type="text" ng-model="searchId" class="form-control"/>
+
+            <label for="titlesearch">Enter Title:</label>
+            <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
 
             <button ng-click="queryBooks();" class="btn btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search
             </button>
+
             <a href="#/books/create" >
                 <button class="btn btn-primary pull-right">
                     <i class="glyphicon glyphicon-plus"></i> Add Book
