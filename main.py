@@ -6,14 +6,14 @@ from sblibrary import SbLibraryApi
 
 class SendReminderHandler(webapp2.RequestHandler):
     def get(self):
-        """Set Announcement in Memcache."""
+        """Send overdue reminders."""
         arr = SbLibraryApi._getOverDue()
         for (emailid, msg) in arr:
             mail.send_mail(
                 'noreply@%s.appspotmail.com' % (
                 app_identity.get_application_id()),     # from
                 emailid,                                # to
-                'Books overdue ar Shishu Bharathi!',    # subj
+                'Books overdue at Shishu Bharathi!',    # subj
                 msg                                     # body
             )
 

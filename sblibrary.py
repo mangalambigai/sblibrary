@@ -222,7 +222,7 @@ class SbLibraryApi(remote.Service):
 
     @staticmethod
     def _getOverDue():
-        """sets the overdue users to memcache"""
+        """returns the email ids and messages for overdue checkouts"""
         #overdueCheckouts = Checkout.query(Checkout.duedate < date.today()) \
         overdueCheckouts = Checkout.query() \
             .fetch( projection=[Checkout.title, Checkout.studentId] )
