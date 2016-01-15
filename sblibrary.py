@@ -238,7 +238,7 @@ class SbLibraryApi(remote.Service):
         overDueArr = []
         for k, v in overDueDict.iteritems():
             message = 'The following books are overdue:'+ \
-                ' Please return them to Shishu Bharathi ASAP:'
+                ' Please return them to Shishu Bharathi ASAP:\n'
             for book in v:
                 message += book + '\n'
             overDueArr.append((k, message))
