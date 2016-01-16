@@ -210,7 +210,8 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Search returned '+
+                                resp.items.length + ' books.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -294,7 +295,7 @@ libraryApp.controllers.controller('CreateStudentCtrl',
  * A controller used for Edit Student page.
  */
 libraryApp.controllers.controller('EditStudentCtrl',
-    function ($scope, $log, $routeParams , HTTP_ERRORS) {
+    function ($scope, $log, $routeParams, $location, HTTP_ERRORS) {
 
         /**
          * The Student object being edited in the page.
@@ -366,7 +367,7 @@ libraryApp.controllers.controller('EditStudentCtrl',
                             $scope.messages = 'Updated student successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-
+                            $location.path('/students');
                         }
                         $scope.submitted = true;
                     });
@@ -382,12 +383,17 @@ libraryApp.controllers.controller('EditStudentCtrl',
  * A controller used for Students page.
  */
 libraryApp.controllers.controller('ShowStudentsCtrl',
-    function ($scope, $log, oauth2Provider, HTTP_ERRORS) {
+    function ($scope, $log, $location, oauth2Provider, HTTP_ERRORS) {
         /**
          * Holds the students currently displayed in the page.
          * @type {Array}
          */
         $scope.students = [];
+
+        $scope.dblClick = function(student)
+        {
+            $location.path('/checkout/'+student.websafeKey)
+        }
 
         $scope.queryStudents = function () {
             $scope.submitted = false;
@@ -401,13 +407,15 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query students : ' + errorMessage;
+                            $scope.messages = 'Failed to query students : ' +
+                                errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Search returned ' +
+                                resp.items.length + ' students.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -448,7 +456,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
         $scope.init = function () {
             $scope.submitted = false;
             $scope.loading = true;
-
+            $scope.books = [];
             //get checkouts for this student
             gapi.client.sblibrary.
                 getStudentCheckouts({websafeKey: $routeParams.websafeKey}).
@@ -464,7 +472,8 @@ libraryApp.controllers.controller('CheckoutCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Student has ' +
+                                resp.items.length +' books checked out ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -498,6 +507,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
                             $scope.messages = 'Return succeeded : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
+                            $scope.init()
                         }
                         $scope.submitted = true;
                     });
@@ -507,24 +517,26 @@ libraryApp.controllers.controller('CheckoutCtrl',
 
         //show books for checkout
         $scope.queryBooks = function () {
-            $scope.submitted = false;
-            $scope.loading = true;
+            $scope.bookSearchSubmitted = false;
+            $scope.booksloading = true;
 
             gapi.client.sblibrary.queryBooks(
                 {sbId: $scope.searchId, name: $scope.searchTitle}
                 ).execute(function (resp) {
                     $scope.$apply(function () {
-                        $scope.loading = false;
+                        $scope.booksloading = false;
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query books : ' + errorMessage;
+                            $scope.messages = 'Failed to query books : '
+                                + errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
                             // The request has succeeded.
-                            $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.bookSearchSubmitted = false;
+                            $scope.messages = 'Search returned : '+
+                                resp.items.length + ' books';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -533,7 +545,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
                                 $scope.books.push(book);
                             });
                         }
-                        $scope.submitted = true;
+                        $scope.bookSearchSubmitted = true;
                     });
                 }
             );
@@ -541,7 +553,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
 
         $scope.checkout = function(sbId) {
             $scope.submitted = false;
-            $scope.loading = true;
+            $scope.booksloading = true;
 
             //checkout this book
             gapi.client.sblibrary.checkoutBook({
@@ -549,24 +561,20 @@ libraryApp.controllers.controller('CheckoutCtrl',
                     bookId: sbId}).
                 execute(function (resp) {
                     $scope.$apply(function () {
-                        $scope.loading = false;
+                        $scope.booksloading = false;
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query checkouts : ' + errorMessage;
+                            $scope.messages = 'Failed to checkout : ' + errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Successfully checked out book : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-
-                            $scope.students = [];
-                            angular.forEach(resp.items, function (checkout) {
-                                $scope.checkouts.push(checkout);
-                            });
+                            $scope.init()
                         }
                         $scope.submitted = true;
                     });
@@ -606,11 +614,12 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Query succeeded : ';
+                            $scope.messages = 'Currently there are '+
+                                resp.items.length + ' books checked out.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
-                            $scope.students = [];
+                            $scope.checkouts = [];
                             angular.forEach(resp.items, function (checkout) {
                                 $scope.checkouts.push(checkout);
                             });
@@ -636,7 +645,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
-                            $scope.messages = 'Return succeeded : ';
+                            $scope.messages = 'Book successfully returned : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
                         }

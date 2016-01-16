@@ -11,56 +11,12 @@
     </div>
 
     <div ng-init = "init()">
-        <form class="form-inline" name="filterForm">
-            <div class="form-group-condensed">
-                <label for="search">Enter book name or Id:</label>
-                <input name="search" id="search" type="text" ng-model="searchText" class="form-control"/>
-
-                <button ng-click="queryBooks();" class="btn btn-primary">
-                    <i class="glyphicon glyphicon-search"></i> Search
-                </button>
-                <a href="#/books/create" >
-                    <button class="btn btn-primary pull-right">
-                        <i class="glyphicon glyphicon-plus"></i> Add Book
-                    </button>
-                </a>
-            </div>
-        </form>
-        <div ng-show="submitted && books.length == 0">
-            <h4>No matching results.</h4>
-        </div>
-        <div class="table-responsive" ng-show="books.length > 0">
-            <table id="book-table" class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th>SB ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Language</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="book in books">
-                    <td>{{book.sbId}}</td>
-                    <td>{{book.title}}</td>
-                    <td>{{book.author}}</td>
-                    <td>{{book.language}}</td>
-                    <td>
-                        <button class="btn btn-primary btn-xs" ng-click="checkout(book.sbId)">
-                        <i class="glyphicon glyphicon-shopping-cart"></i>Checkout
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
         <div ng-show="submitted && checkouts.length == 0">
-            <h4>No current checkouts.</h4>
+            <h4>No current checkouts for the student</h4>
         </div>
 
         <div class="table-responsive" ng-show="checkouts.length > 0">
+            <h4>Current checkouts</h4>
             <table id="book-table" class="table table-striped table-hover">
                 <thead>
                 <tr>
@@ -95,6 +51,53 @@
                 </tbody>
             </table>
         </div>
+
+        <h4>Search for books to checkout:</h4>
+        <form class="form-inline" name="filterForm">
+            <div class="form-group-condensed">
+                <label for="idsearch">Enter Id:</label>
+                <input name="idsearch" id="idsearch" type="text" ng-model="searchId" class="form-control"/>
+
+                <label for="titlesearch">Enter Title:</label>
+                <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
+
+                <button ng-click="queryBooks();" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-search"></i> Search
+                </button>
+            </div>
+        </form>
+        <img class="spinner" src="/img/ajax-loader.gif" ng-show="booksloading"/>
+
+        <div ng-show="booksearchsubmitted && books.length == 0">
+            <h4>No matching results.</h4>
+        </div>
+        <div class="table-responsive" ng-show="books.length > 0">
+            <table id="book-table" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Language</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="book in books">
+                    <td>{{book.sbId}}</td>
+                    <td>{{book.title}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.language}}</td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" ng-click="checkout(book.sbId)">
+                        <i class="glyphicon glyphicon-shopping-cart"></i>Checkout
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
 
     </div>
 </div>

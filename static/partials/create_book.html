@@ -15,7 +15,7 @@
 
             <form name="bookForm" novalidate role="form">
                 <div class="form-group">
-                    <label for="sbid">SB ID<span class="required">*</span></label>
+                    <label for="sbid">Book ID<span class="required">*</span></label>
                     <input id="sbid" type="text" name="sbid" ng-model="book.sbId" class="form-control" ng-required="true"/>
                 </div>
 
@@ -40,6 +40,10 @@
                 <button ng-click="createBook(bookForm)" class="btn btn-primary"
                         ng-disabled="!isValidBook(bookForm) || loading">Create
                 </button>
+
+                <a href="#/books">
+                    <button class="btn btn-primary">Back</button>
+                </a>
             </form>
         </div>
     </div>

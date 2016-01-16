@@ -15,7 +15,7 @@
 
             <form name="studentForm" novalidate role="form">
                 <div class="form-group">
-                    <label for="sbid">SB ID<span class="required">*</span></label>
+                    <label for="sbid">Student ID<span class="required">*</span></label>
                     <input id="sbid" type="text" name="sbid" ng-model="student.sbId" class="form-control" ng-required="true"/>
                 </div>
 
@@ -38,6 +38,10 @@
                 <button ng-click="createStudent(studentForm)" class="btn btn-primary"
                         ng-disabled="!isValidStudent(studentForm) || loading">Create
                 </button>
+
+                <a href="#/students">
+                    <button class="btn btn-primary">Back</button>
+                </a>
             </form>
         </div>
     </div>
