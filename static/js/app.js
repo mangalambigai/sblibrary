@@ -49,7 +49,7 @@ var app = angular.module('sbLibraryApp',
                     controller: 'CheckoutCtrl'
                 }).
                 when('/', {
-                    templateUrl: '/partials/home.html'
+                    redirectTo: '/students'
                 }).
                 otherwise({
                     redirectTo: '/'
