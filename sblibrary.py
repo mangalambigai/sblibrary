@@ -85,6 +85,9 @@ class SbLibraryApi(remote.Service):
     def addBook(self, request):
         """create a book."""
         b_key = ndb.Key(Book, request.sbId)
+        if b_key.get():
+            raise endpoints.ConflictException(
+                'Another book with same id already exists: %s' % request.sbId)
         book = Book(key = b_key,
             title = request.title,
             author = request.author,
@@ -159,6 +162,10 @@ class SbLibraryApi(remote.Service):
     def addStudent(self, request):
         """create a student."""
         b_key = ndb.Key(Student, request.sbId)
+        if b_key.get():
+            raise endpoints.ConflictException(
+                'Another student with same id already exists: %s' % request.sbId)
+
         student = Student(key = b_key,
             name = request.name,
             email = request.email,
