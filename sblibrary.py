@@ -9,6 +9,7 @@ author -- mangalambigais@gmail.com
 from datetime import datetime, date, timedelta
 
 import endpoints
+import string
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
@@ -46,7 +47,7 @@ class SbLibraryApi(remote.Service):
     def _copyBookToForm(self, book):
         """Copy relevant fields from Book to BookForm."""
         bf = BookForm()
-        bf.title = book.title
+        bf.title = string.capwords(book.title)
         bf.author = book.author
         bf.sbId = book.sbId
         bf.language = book.language
@@ -73,8 +74,8 @@ class SbLibraryApi(remote.Service):
                 Book.sbId < request.sbId + 'z' ))
         elif request.name:
             q = q.filter( ndb.AND(
-                Book.title >= request.name,
-                Book.title < request.name + 'z'))
+                Book.title >= request.name.lower(),
+                Book.title < request.name.lower() + 'z'))
 
         return BookForms(items = [self._copyBookToForm(book) \
             for book in q])
@@ -89,7 +90,7 @@ class SbLibraryApi(remote.Service):
             raise endpoints.ConflictException(
                 'Another book with same id already exists: %s' % request.sbId)
         book = Book(key = b_key,
-            title = request.title,
+            title = request.title.lower(),
             author = request.author,
             sbId = request.sbId,
             language = request.language)
@@ -113,7 +114,7 @@ class SbLibraryApi(remote.Service):
         """edit a book."""
         b_key = ndb.Key(Book, request.sbId)
         book = b_key.get()
-        book.title = request.title
+        book.title = request.title.lower()
         book.author = request.author
         book.language = request.language
         book.put()
@@ -123,7 +124,8 @@ class SbLibraryApi(remote.Service):
     def _copyStudentToForm(self, student):
         """Copy relevant fields from Student to StudentForm."""
         sf = StudentForm()
-        sf.name = student.name
+        #return capitalized name. names are stored all lower for querying
+        sf.name = string.capwords(student.name)
         sf.email = student.email
         sf.cellphone = student.cellphone
         sf.sbId = student.sbId
@@ -150,8 +152,8 @@ class SbLibraryApi(remote.Service):
                 Student.sbId < request.sbId + 'z' ))
         elif request.name:
             q = q.filter( ndb.AND(
-                Student.name >= request.name,
-                Student.name < request.name + 'z'))
+                Student.name >= request.name.lower(),
+                Student.name < request.name.lower() + 'z'))
 
         return StudentForms(items = [self._copyStudentToForm(student) \
             for student in q])
@@ -166,8 +168,11 @@ class SbLibraryApi(remote.Service):
             raise endpoints.ConflictException(
                 'Another student with same id already exists: %s' % request.sbId)
 
+        #we are going to store the name in lower case,
+        #so we can query case insensitive
+
         student = Student(key = b_key,
-            name = request.name,
+            name = request.name.lower(),
             email = request.email,
             sbId = request.sbId,
             cellphone = request.cellphone)
@@ -191,7 +196,7 @@ class SbLibraryApi(remote.Service):
         """edit a student."""
         s_key = ndb.Key(Student, request.sbId)
         student = s_key.get()
-        student.name = request.name
+        student.name = request.name.lower()
         student.email = request.email
         student.cellphone = request.cellphone
         student.put()
@@ -242,7 +247,7 @@ class SbLibraryApi(remote.Service):
         cf.checkoutDate = str(checkout.checkoutDate)
         cf.dueDate = str(checkout.dueDate)
         cf.studentName = checkout.studentName
-        cf.title = checkout.title
+        cf.title = string.capwords(checkout.title)
         cf.author = checkout.author
         cf.language = checkout.language
         cf.websafeKey = checkout.key.urlsafe()
@@ -280,7 +285,8 @@ class SbLibraryApi(remote.Service):
             email = ndb.Key(Student,checkout.studentId).get().email,
             if not email in overDueDict:
                 overDueDict[email] = []
-            overDueDict[email].append(checkout.title)
+
+            overDueDict[email].append(string.capwords(checkout.title))
 
         overDueArr = []
         for k, v in overDueDict.iteritems():
