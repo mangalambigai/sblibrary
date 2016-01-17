@@ -93,7 +93,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
  * A controller used for Edit Books page.
  */
 libraryApp.controllers.controller('EditBookCtrl',
-    function ($scope, $log, $routeParams, HTTP_ERRORS) {
+    function ($scope, $log, $routeParams, $location, HTTP_ERRORS) {
 
         /**
          * The book object being edited in the page.
@@ -169,6 +169,7 @@ libraryApp.controllers.controller('EditBookCtrl',
                             $scope.messages = 'Book updated successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
+                            $location.path('/books')
                         }
                         $scope.submitted = true;
                     });
@@ -210,8 +211,11 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.length;
                             $scope.messages = 'Search returned '+
-                                resp.items.length + ' books.';
+                                count + ' books.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -414,8 +418,12 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.length;
+
                             $scope.messages = 'Search returned ' +
-                                resp.items.length + ' students.';
+                                 count + ' students.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -472,8 +480,11 @@ libraryApp.controllers.controller('CheckoutCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.length;
                             $scope.messages = 'Student has ' +
-                                resp.items.length +' books checked out ';
+                                 count +' books checked out ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -535,8 +546,11 @@ libraryApp.controllers.controller('CheckoutCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.bookSearchSubmitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.count;
                             $scope.messages = 'Search returned : '+
-                                resp.items.length + ' books';
+                                count + ' books';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -614,8 +628,11 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                         } else {
                             // The request has succeeded.
                             $scope.submitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.length;
                             $scope.messages = 'Currently there are '+
-                                resp.items.length + ' books checked out.';
+                                count + ' books checked out.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
