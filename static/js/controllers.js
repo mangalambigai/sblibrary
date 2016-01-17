@@ -39,7 +39,9 @@ libraryApp.controllers.controller('CreateBookCtrl',
             'Kannada',
             'Telugu',
             'Hindi',
-            'Bengali'
+            'Gujarathi',
+            'Marathi',
+            'Sanskrit'
         ];
 
         /**
@@ -107,11 +109,12 @@ libraryApp.controllers.controller('EditBookCtrl',
             'Kannada',
             'Telugu',
             'Hindi',
-            'Bengali'
+            'Gujarathi',
+            'Marathi',
+            'Sanskrit'
         ];
 
         $scope.init = function() {
-            console.log('here');
             $scope.loading = true;
             gapi.client.sblibrary.getBook({
                 websafeKey: $routeParams.websafeKey
@@ -457,7 +460,7 @@ libraryApp.controllers.controller('EditStudentCtrl',
  * @name DeleteStudentCtrl
  *
  * @description
- * A controller used for Edit Student page.
+ * A controller used for Delete Student page.
  */
 libraryApp.controllers.controller('DeleteStudentCtrl',
     function ($scope, $log, $routeParams, $location, HTTP_ERRORS) {
@@ -554,7 +557,7 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
         $scope.queryStudents = function () {
             $scope.submitted = false;
             $scope.loading = true;
-            //gapi.client.sblibrary.getStudents().
+
             gapi.client.sblibrary.queryStudents(
                 {sbId: $scope.searchId, name: $scope.searchName}
                 ).execute(function (resp) {
@@ -617,6 +620,8 @@ libraryApp.controllers.controller('CheckoutCtrl',
             $scope.submitted = false;
             $scope.loading = true;
             $scope.books = [];
+            $scope.checkouts = [];
+
             //get checkouts for this student
             gapi.client.sblibrary.
                 getStudentCheckouts({websafeKey: $routeParams.websafeKey}).
@@ -700,8 +705,8 @@ libraryApp.controllers.controller('CheckoutCtrl',
                             $scope.bookSearchSubmitted = false;
                             var count = 0;
                             if (resp.items)
-                                count = resp.items.count;
-                            $scope.messages = 'Search returned : '+
+                                count = resp.items.length;
+                            $scope.messages = 'Search returned '+
                                 count + ' books';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
