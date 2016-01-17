@@ -180,6 +180,79 @@ libraryApp.controllers.controller('EditBookCtrl',
 
 /**
  * @ngdoc controller
+ * @name DeleteBookCtrl
+ *
+ * @description
+ * A controller used for Delete Books page.
+ */
+libraryApp.controllers.controller('DeleteBookCtrl',
+    function ($scope, $log, $routeParams, $location, HTTP_ERRORS) {
+
+        /**
+         * The book object being deleted in the page.
+         * @type {{}|*}
+         */
+        $scope.book =  {};
+
+        $scope.init = function() {
+            $scope.loading = true;
+            gapi.client.sblibrary.getBook({
+                websafeKey: $routeParams.websafeKey
+            }).execute(function (resp) {
+                $scope.$apply(function () {
+                    $scope.loading = false;
+                    if (resp.error) {
+                        // The request has failed.
+                        var errorMessage = resp.error.message || '';
+                        $scope.messages = 'Failed to get the book : ' + $routeParams.websafeKey
+                            + ' ' + errorMessage;
+                        $scope.alertStatus = 'warning';
+                        $log.error($scope.messages);
+                    } else {
+                        // The request has succeeded.
+                        $scope.alertStatus = 'success';
+                        $scope.book = resp.result;
+                    }
+                });
+            });
+        };
+
+        /**
+         * Invokes the book.deleteBook API.
+         *
+         * @param bookForm the form object.
+         */
+        $scope.deleteBook = function(bookForm) {
+
+            $scope.submitted = false;
+            $scope.loading = true;
+
+            gapi.client.sblibrary.deleteBook($scope.book).
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to delete book : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Book deleted successfully : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+                            $location.path('/books')
+                        }
+                        $scope.submitted = true;
+                    });
+                });
+        }
+    }
+);
+/**
+ * @ngdoc controller
  * @name ShowBooksCtrl
  *
  * @description
@@ -369,6 +442,85 @@ libraryApp.controllers.controller('EditStudentCtrl',
                             // The request has succeeded.
                             $scope.submitted = false;
                             $scope.messages = 'Updated student successfully : ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+                            $location.path('/students');
+                        }
+                        $scope.submitted = true;
+                    });
+                });
+        }
+    }
+);
+/**
+ * @ngdoc controller
+ * @name DeleteStudentCtrl
+ *
+ * @description
+ * A controller used for Edit Student page.
+ */
+libraryApp.controllers.controller('DeleteStudentCtrl',
+    function ($scope, $log, $routeParams, $location, HTTP_ERRORS) {
+
+        /**
+         * The Student object being deleted in the page.
+         */
+        $scope.student = {};
+
+        /**
+         * Initializes the $scope.student object
+         * calls library.getStudent API
+         */
+        $scope.init = function () {
+            $scope.submitted = false;
+            $scope.loading = true;
+
+            gapi.client.sblibrary.getStudent({
+                websafeKey: $routeParams.websafeKey
+            }).execute(function (resp) {
+                $scope.$apply(function () {
+                    $scope.loading = false;
+                    if (resp.error) {
+                        // The request has failed.
+                        var errorMessage = resp.error.message || '';
+                        $scope.messages = 'Failed to get the student : ' + $routeParams.websafeKey
+                            + ' ' + errorMessage;
+                        $scope.alertStatus = 'warning';
+                        $log.error($scope.messages);
+                    } else {
+                        // The request has succeeded.
+                        $scope.alertStatus = 'success';
+                        $scope.student = resp.result;
+                    }
+                });
+            });
+
+        }
+
+        /**
+         * Invokes the library.deleteStudent API.
+         *
+         * @param StudentForm the form object.
+         */
+        $scope.deleteStudent = function(studentForm) {
+
+            $scope.submitted = false;
+            $scope.loading = true;
+
+            gapi.client.sblibrary.deleteStudent($scope.student).
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to delete Student : ' + errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            $scope.messages = 'Deleted student successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
                             $location.path('/students');

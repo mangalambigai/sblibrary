@@ -120,6 +120,14 @@ class SbLibraryApi(remote.Service):
         book.put()
         return request
 
+    @endpoints.method(BookForm, message_types.VoidMessage,
+        path='deleteBook', http_method='POST', name='deleteBook')
+    def deleteBook(self, request):
+        """delete a book"""
+        book_key = ndb.Key(urlsafe=request.websafeKey)
+        book_key.delete()
+        return message_types.VoidMessage()
+
     #End points for Students
     def _copyStudentToForm(self, student):
         """Copy relevant fields from Student to StudentForm."""
@@ -201,6 +209,14 @@ class SbLibraryApi(remote.Service):
         student.cellphone = request.cellphone
         student.put()
         return request
+
+    @endpoints.method(StudentForm, message_types.VoidMessage,
+        path='deleteStudent', http_method='POST', name='deleteStudent')
+    def deleteStudent(self, request):
+        """delete a student"""
+        student_key = ndb.Key(urlsafe=request.websafeKey)
+        student_key.delete()
+        return message_types.VoidMessage()
 
     #Endpoints for checkouts
 

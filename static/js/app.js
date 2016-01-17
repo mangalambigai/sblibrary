@@ -28,6 +28,10 @@ var app = angular.module('sbLibraryApp',
                     templateUrl: '/partials/edit_book.html',
                     controller: 'EditBookCtrl'
                 }).
+                when('/books/delete/:websafeKey', {
+                    templateUrl: '/partials/delete_book.html',
+                    controller: 'DeleteBookCtrl'
+                }).
                 when('/students', {
                     templateUrl: '/partials/show_students.html',
                     controller: 'ShowStudentsCtrl'
@@ -39,6 +43,10 @@ var app = angular.module('sbLibraryApp',
                 when('/students/edit/:websafeKey', {
                     templateUrl: '/partials/edit_student.html',
                     controller: 'EditStudentCtrl'
+                }).
+                when('/students/delete/:websafeKey', {
+                    templateUrl: '/partials/delete_student.html',
+                    controller: 'DeleteStudentCtrl'
                 }).
                 when('/checkouts', {
                     templateUrl: '/partials/show_checkouts.html',
