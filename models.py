@@ -17,10 +17,10 @@ class Book(ndb.Model):
     """Book - Book object"""
     sbId = ndb.StringProperty()
     title = ndb.StringProperty()
-    author = ndb.StringProperty()
-    language = ndb.StringProperty()
+    author = ndb.StringProperty(indexed = False)
+    language = ndb.StringProperty(indexed = False)
     studentId = ndb.StringProperty()
-    checkoutDate = ndb.DateProperty()
+    checkoutDate = ndb.DateProperty(indexed = False)
     dueDate = ndb.DateProperty()
 
 class Language(messages.Enum):
@@ -48,9 +48,9 @@ class Student(ndb.Model):
     """Student - Student object"""
     sbId = ndb.StringProperty()
     name = ndb.StringProperty()
-    email = ndb.StringProperty()
-    cellphone = ndb.StringProperty()
-    checkedoutBookIds = ndb.StringProperty(repeated = True)
+    email = ndb.StringProperty(indexed = False)
+    cellphone = ndb.StringProperty(indexed = False)
+    checkedoutBookIds = ndb.StringProperty(repeated = True, indexed = False)
 
 class StudentForm(messages.Message):
     """StudentForm - Student outbound from message"""
