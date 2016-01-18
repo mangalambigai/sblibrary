@@ -812,7 +812,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
         $scope.checkin = function(bookId) {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.returnBook({id : bookId }).
+            gapi.client.sblibrary.returnBook({sbId : bookId }).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
