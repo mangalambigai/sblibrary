@@ -21,7 +21,7 @@
             <label for="idsearch">Enter Id:</label>
             <input name="idsearch" id="idsearch" type="text" ng-model="searchId" class="form-control"/>
 
-            <label for="titlesearch">Enter Title:</label>
+            <label for="titlesearch">or Enter Title:</label>
             <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
 
             <button ng-click="queryBooks();" class="btn btn-primary">
@@ -33,6 +33,8 @@
                     <i class="glyphicon glyphicon-plus"></i> Add Book
                 </button>
             </a>
+            <span class="label label-danger"
+                ng-show="searchId.length>0 && searchTitle.length>0">We can only search on one field!</span>
         </div>
     </form>
     <div ng-show="submitted && books.length == 0">

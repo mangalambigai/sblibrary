@@ -21,12 +21,14 @@
             <label for="searchId">Enter student Id:</label>
             <input name="searchId" id="searchId" type="text" ng-model="searchId" class="form-control"/>
 
-            <label for="searchName">Enter student Name:</label>
+            <label for="searchName">or Name:</label>
             <input name="searchName" id="searchName" type="text" ng-model="searchName" class="form-control"/>
 
             <button ng-click="queryStudents();" class="btn btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search
             </button>
+            <span class="label label-danger"
+                ng-show="searchId.length>0 && searchName.length>0">We can only search on one field!</span>
 
             <a href="#/students/create" >
                 <button class="btn btn-primary pull-right">
