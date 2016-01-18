@@ -776,6 +776,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
         $scope.checkouts = [];
 
         $scope.init = function () {
+            $scope.checkouts = [];
             $scope.submitted = false;
             $scope.loading = true;
             gapi.client.sblibrary.getCheckouts().
@@ -828,6 +829,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                             $scope.messages = 'Book successfully returned : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
+                            $scope.init()
                         }
                         $scope.submitted = true;
                     });
