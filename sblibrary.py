@@ -302,13 +302,14 @@ class SbLibraryApi(remote.Service):
     @staticmethod
     def _getOverDue():
         """returns the email ids and messages for overdue checkouts"""
-        overdueCheckouts = Book.query(Book.duedate < date.today()) \
-            .fetch( projection=[Book.title, Book.studentId] )
+        overdueCheckouts = Book.query(
+            ndb.AND(Book.dueDate != None,
+                Book.dueDate < date.today())).fetch()
 
         #create a dictionary so we can consolidate the books per email
         overDueDict = {}
         for checkout in overdueCheckouts:
-            email = ndb.Key(Student, studentId).get().email,
+            email = ndb.Key(Student, checkout.studentId).get().email
             if not email in overDueDict:
                 overDueDict[email] = []
 
