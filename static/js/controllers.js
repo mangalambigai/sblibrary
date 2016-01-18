@@ -812,7 +812,8 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                 }
             );
         }
-        $scope.checkin = function(bookId) {
+        $scope.checkin = function(book) {
+            var bookId = book.bookId
             $scope.submitted = false;
             $scope.loading = true;
             gapi.client.sblibrary.returnBook({sbId : bookId }).
@@ -831,7 +832,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                             $scope.messages = 'Book successfully returned : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-                            $scope.init()
+                            book.checkedIn = true;
                         }
                         $scope.submitted = true;
                     });

@@ -60,9 +60,10 @@
                 <td>{{checkout.checkoutDate}}</td>
                 <td>{{checkout.dueDate}}</td>
                 <td>
-                    <button class="btn btn-xs btn-primary" ng-click="checkin(checkout.bookId)">
+                    <button class="btn btn-xs btn-primary" ng-click="checkin(checkout)" ng-show="!checkout.checkedIn">
                         Check In
                     </button>
+                    <span ng-show="checkout.checkedIn">Checked in</span>
                 </td>
                 <td>
                 </td>
