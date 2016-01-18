@@ -59,6 +59,10 @@ class SbLibraryApi(remote.Service):
             path='books', http_method='GET', name='getBooks')
     def getBooks(self, request):
         """Return all books."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
+
         q = Book.query()
         return BookForms(items = [self._copyBookToForm(book) \
             for book in q])
@@ -67,6 +71,9 @@ class SbLibraryApi(remote.Service):
             path='querybooks', http_method='GET', name='queryBooks')
     def queryBooks(self, request):
         """Return books based on query."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         q = Book.query()
         if request.sbId:
             q = q.filter( ndb.AND(
@@ -85,6 +92,9 @@ class SbLibraryApi(remote.Service):
             path='books', http_method='POST', name='addBook')
     def addBook(self, request):
         """create a book."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         b_key = ndb.Key(Book, request.sbId)
         if b_key.get():
             raise endpoints.ConflictException(
@@ -101,6 +111,9 @@ class SbLibraryApi(remote.Service):
         path='getBook', http_method='GET', name='getBook')
     def getBook(self, request):
         """get a Book"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         bookKey = ndb.Key(Book, request.sbId)
         book = bookKey.get()
         if not book:
@@ -113,6 +126,9 @@ class SbLibraryApi(remote.Service):
             path='book', http_method='POST', name='editBook')
     def editBook(self, request):
         """edit a book."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         b_key = ndb.Key(Book, request.sbId.upper())
         book = b_key.get()
         book.title = request.title.lower()
@@ -125,6 +141,9 @@ class SbLibraryApi(remote.Service):
         path='deleteBook', http_method='POST', name='deleteBook')
     def deleteBook(self, request):
         """delete a book"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         book_key = ndb.Key(Book, request.sbId)
         book_key.delete()
         return message_types.VoidMessage()
@@ -145,6 +164,9 @@ class SbLibraryApi(remote.Service):
             path='students', http_method='GET', name='getStudents')
     def getStudents(self, request):
         """Return all students."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         q = Student.query()
         return StudentForms(items = [self._copyStudentToForm(student) \
             for student in q])
@@ -153,6 +175,9 @@ class SbLibraryApi(remote.Service):
             path='queryStudents', http_method='GET', name='queryStudents')
     def queryStudents(self, request):
         """Return student based on query."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         q = Student.query()
         if request.sbId:
             q = q.filter( ndb.AND(
@@ -171,6 +196,9 @@ class SbLibraryApi(remote.Service):
             path='students', http_method='POST', name='addStudent')
     def addStudent(self, request):
         """create a student."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         b_key = ndb.Key(Student, request.sbId)
         if b_key.get():
             raise endpoints.ConflictException(
@@ -191,6 +219,9 @@ class SbLibraryApi(remote.Service):
         path='getStudent', http_method='GET', name='getStudent')
     def getStudent(self, request):
         """get a Student"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         studentKey = ndb.Key(Student, request.sbId)
         student = studentKey.get()
         if not student:
@@ -203,6 +234,9 @@ class SbLibraryApi(remote.Service):
             path='student', http_method='POST', name='editStudent')
     def editStudent(self, request):
         """edit a student."""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         s_key = ndb.Key(Student, request.sbId)
         student = s_key.get()
         student.name = request.name.lower()
@@ -215,6 +249,9 @@ class SbLibraryApi(remote.Service):
         path='deleteStudent', http_method='POST', name='deleteStudent')
     def deleteStudent(self, request):
         """delete a student"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         student_key = ndb.Key(Student, request.sbId)
         student_key.delete()
         return message_types.VoidMessage()
@@ -240,6 +277,9 @@ class SbLibraryApi(remote.Service):
         path='checkout', http_method='POST', name='checkoutBook')
     def checkoutBook(self, request):
         """checkout a book"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         self._doCheckout(request.bookId, request.studentId)
         return message_types.VoidMessage()
 
@@ -261,6 +301,9 @@ class SbLibraryApi(remote.Service):
         path='return', http_method='POST', name='returnBook')
     def returnBook(self, request):
         """return a book"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         self._doReturn(request.sbId)
         return message_types.VoidMessage()
 
@@ -281,6 +324,9 @@ class SbLibraryApi(remote.Service):
         path='checkout', http_method='GET', name='getCheckouts')
     def getCheckouts(self, request):
         """get checkout records"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         q = Book.query(Book.checkedOut == True)
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in q])
@@ -289,6 +335,9 @@ class SbLibraryApi(remote.Service):
         path='queryCheckouts', http_method='GET', name='queryCheckouts')
     def queryCheckouts(self, request):
         """get checkout records"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         q = Book.query(Book.checkedOut == True)
 
         if request.sbId:
@@ -308,6 +357,9 @@ class SbLibraryApi(remote.Service):
         path='getStudentCheckouts', http_method='GET', name='getStudentCheckouts')
     def getStudentCheckouts(self, request):
         """get checkout records"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         s_key = ndb.Key(Student, request.sbId)
         student = s_key.get()
 
