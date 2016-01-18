@@ -22,6 +22,7 @@ class Book(ndb.Model):
     studentId = ndb.StringProperty()
     checkoutDate = ndb.DateProperty(indexed = False)
     dueDate = ndb.DateProperty()
+    checkedOut = ndb.BooleanProperty()
 
 class Language(messages.Enum):
     """Language - enumeration value"""

@@ -12,11 +12,25 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <h3>Current checkouts</h3>
+            <h3>Search Current Checkouts</h3>
         </div>
     </div>
 
-    <div ng-init="init()" >
+    <form class="form-inline" name="filterForm">
+        <div class="form-group-condensed">
+            <label for="idsearch">Enter Id:</label>
+            <input name="idsearch" id="idsearch" type="text" ng-model="searchId" class="form-control"/>
+
+            <label for="titlesearch">Enter Title:</label>
+            <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
+
+            <button ng-click="queryCheckouts();" class="btn btn-primary">
+                <i class="glyphicon glyphicon-search"></i> Search
+            </button>
+
+        </div>
+    </form>
+
 
     <div ng-show="submitted && checkouts.length == 0">
         <h4>No matching results.</h4>
@@ -55,7 +69,6 @@
             </tr>
             </tbody>
         </table>
-    </div>
     </div>
 </div>
 

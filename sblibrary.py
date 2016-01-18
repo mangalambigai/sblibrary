@@ -233,6 +233,7 @@ class SbLibraryApi(remote.Service):
         book.studentId = studentId
         book.checkoutDate = today
         book.dueDate = dueDate
+        book.checkedOut = True
         book.put()
 
     @endpoints.method(CheckoutRequestForm, message_types.VoidMessage,
@@ -252,6 +253,7 @@ class SbLibraryApi(remote.Service):
         del book.studentId
         del book.dueDate
         del book.checkoutDate
+        del book.checkedOut
         book.put()
         student.put()
 
@@ -279,7 +281,25 @@ class SbLibraryApi(remote.Service):
         path='checkout', http_method='GET', name='getCheckouts')
     def getCheckouts(self, request):
         """get checkout records"""
-        q = Book.query(Book.dueDate != None)
+        q = Book.query(Book.checkedOut == True)
+        return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
+            for checkout in q])
+
+    @endpoints.method(QUERY_REQUEST, CheckoutForms,
+        path='queryCheckouts', http_method='GET', name='queryCheckouts')
+    def queryCheckouts(self, request):
+        """get checkout records"""
+        q = Book.query(Book.checkedOut == True)
+
+        if request.sbId:
+            q = q.filter( ndb.AND(
+                Book.sbId >= request.sbId.upper(),
+                Book.sbId < request.sbId.upper() + 'Z' ))
+        elif request.name:
+            q = q.filter( ndb.AND(
+                Book.title >= request.name.lower(),
+                Book.title < request.name.lower() + 'z'))
+
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in q])
 

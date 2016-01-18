@@ -775,11 +775,13 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
          */
         $scope.checkouts = [];
 
-        $scope.init = function () {
+        $scope.queryCheckouts = function () {
             $scope.checkouts = [];
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.getCheckouts().
+            gapi.client.sblibrary.queryCheckouts({
+                sbId: $scope.searchId, name: $scope.searchTitle
+            }).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
