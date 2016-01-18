@@ -52,7 +52,7 @@ var app = angular.module('sbLibraryApp',
                     templateUrl: '/partials/show_checkouts.html',
                     controller: 'ShowCheckoutsCtrl'
                 }).
-                when('/checkout/:studentId', {
+                when('/students/checkout/:studentId', {
                     templateUrl: '/partials/checkout.html',
                     controller: 'CheckoutCtrl'
                 }).

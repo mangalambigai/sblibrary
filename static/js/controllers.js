@@ -556,7 +556,7 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
 
         $scope.dblClick = function(student)
         {
-            $location.path('/checkout/'+student.sbId)
+            $location.path('/students/checkout/'+student.sbId)
         }
 
         $scope.queryStudents = function () {
@@ -860,7 +860,7 @@ libraryApp.controllers.controller('RootCtrl',
      * @returns {boolean} true if viewLocation is the currently viewed page. Returns false otherwise.
      */
     $scope.isActive = function (viewLocation) {
-        return viewLocation === $location.path();
+        return  $location.path().indexOf(viewLocation)>=0;
     };
 
     /**
