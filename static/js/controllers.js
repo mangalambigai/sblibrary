@@ -117,15 +117,15 @@ libraryApp.controllers.controller('EditBookCtrl',
         $scope.init = function() {
             $scope.loading = true;
             gapi.client.sblibrary.getBook({
-                websafeKey: $routeParams.websafeKey
+                sbId: $routeParams.bookId
             }).execute(function (resp) {
                 $scope.$apply(function () {
                     $scope.loading = false;
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the book : ' + $routeParams.websafeKey
-                            + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the book : '
+                            + $routeParams.bookId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -200,15 +200,15 @@ libraryApp.controllers.controller('DeleteBookCtrl',
         $scope.init = function() {
             $scope.loading = true;
             gapi.client.sblibrary.getBook({
-                websafeKey: $routeParams.websafeKey
+                sbId: $routeParams.bookId
             }).execute(function (resp) {
                 $scope.$apply(function () {
                     $scope.loading = false;
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the book : ' + $routeParams.websafeKey
-                            + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the book : '
+                            + $routeParams.bookId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -262,7 +262,7 @@ libraryApp.controllers.controller('DeleteBookCtrl',
  * A controller used for Books page.
  */
 libraryApp.controllers.controller('ShowBooksCtrl',
-    function ($scope, $log, oauth2Provider, HTTP_ERRORS) {
+    function ($scope, $log, $location, oauth2Provider, HTTP_ERRORS) {
         /**
          * Holds the books currently displayed in the page.
          * @type {Array}
@@ -304,6 +304,11 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                     });
                 }
             );
+        }
+
+        $scope.dblClick = function(book)
+        {
+            $location.path('/books/edit/'+book.sbId);
         }
     }
 );
@@ -391,15 +396,15 @@ libraryApp.controllers.controller('EditStudentCtrl',
             $scope.loading = true;
 
             gapi.client.sblibrary.getStudent({
-                websafeKey: $routeParams.websafeKey
+                sbId: $routeParams.studentId
             }).execute(function (resp) {
                 $scope.$apply(function () {
                     $scope.loading = false;
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the student : ' + $routeParams.websafeKey
-                            + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the student : ' +
+                            $routeParams.studentId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -479,15 +484,15 @@ libraryApp.controllers.controller('DeleteStudentCtrl',
             $scope.loading = true;
 
             gapi.client.sblibrary.getStudent({
-                websafeKey: $routeParams.websafeKey
+                sbId: $routeParams.studentId
             }).execute(function (resp) {
                 $scope.$apply(function () {
                     $scope.loading = false;
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the student : ' + $routeParams.websafeKey
-                            + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the student : '
+                            + $routeParams.studentId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -551,7 +556,7 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
 
         $scope.dblClick = function(student)
         {
-            $location.path('/checkout/'+student.websafeKey)
+            $location.path('/checkout/'+student.sbId)
         }
 
         $scope.queryStudents = function () {
@@ -624,14 +629,15 @@ libraryApp.controllers.controller('CheckoutCtrl',
 
             //get checkouts for this student
             gapi.client.sblibrary.
-                getStudentCheckouts({websafeKey: $routeParams.websafeKey}).
+                getStudentCheckouts({sbId: $routeParams.studentId}).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query checkouts : ' + errorMessage;
+                            $scope.messages = 'Failed to query checkouts : ' +
+                                errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
@@ -656,10 +662,10 @@ libraryApp.controllers.controller('CheckoutCtrl',
             );
         };
 
-        $scope.checkin = function(checkoutKey) {
+        $scope.checkin = function(bookId) {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.returnBook({websafeKey: checkoutKey}).
+            gapi.client.sblibrary.returnBook({sbId: bookId}).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
@@ -722,14 +728,14 @@ libraryApp.controllers.controller('CheckoutCtrl',
             );
         }
 
-        $scope.checkout = function(sbId) {
+        $scope.checkout = function(bookId) {
             $scope.submitted = false;
             $scope.booksloading = true;
 
             //checkout this book
             gapi.client.sblibrary.checkoutBook({
-                    studentKey: $routeParams.websafeKey,
-                    bookId: sbId}).
+                    studentId: $routeParams.studentId,
+                    bookId: bookId}).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.booksloading = false;
@@ -803,10 +809,10 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                 }
             );
         }
-        $scope.checkin = function(checkoutKey) {
+        $scope.checkin = function(bookId) {
             $scope.submitted = false;
             $scope.loading = true;
-            gapi.client.sblibrary.returnBook({websafeKey: checkoutKey}).
+            gapi.client.sblibrary.returnBook({id : bookId }).
                 execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
@@ -842,7 +848,8 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
  * such as user authentications.
  *
  */
-libraryApp.controllers.controller('RootCtrl', function ($scope, $location, oauth2Provider) {
+libraryApp.controllers.controller('RootCtrl',
+    function ($scope, $location, oauth2Provider) {
 
     /**
      * Returns if the viewLocation is the currently viewed page.

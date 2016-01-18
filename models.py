@@ -19,7 +19,9 @@ class Book(ndb.Model):
     title = ndb.StringProperty()
     author = ndb.StringProperty()
     language = ndb.StringProperty()
-    studentKey = ndb.StringProperty()
+    studentId = ndb.StringProperty()
+    checkoutDate = ndb.DateProperty()
+    dueDate = ndb.DateProperty()
 
 class Language(messages.Enum):
     """Language - enumeration value"""
@@ -35,8 +37,7 @@ class BookForm(messages.Message):
     title = messages.StringField(2)
     author = messages.StringField(3)
     language = messages.StringField(4)
-    websafeKey = messages.StringField(5)
-    studentKey = messages.StringField(6)
+    dueDate = messages.StringField(5)
 
 class BookForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
@@ -49,6 +50,7 @@ class Student(ndb.Model):
     name = ndb.StringProperty()
     email = ndb.StringProperty()
     cellphone = ndb.StringProperty()
+    checkedoutBookIds = ndb.StringProperty(repeated = True)
 
 class StudentForm(messages.Message):
     """StudentForm - Student outbound from message"""
@@ -56,35 +58,22 @@ class StudentForm(messages.Message):
     name = messages.StringField(2)
     email = messages.StringField(3)
     cellphone = messages.StringField(4)
-    websafeKey = messages.StringField(5)
 
 class StudentForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
     items = messages.MessageField(StudentForm, 1, repeated = True)
 
 #Checkout models
-class Checkout(ndb.Model):
-    """Checkout - record for each checkout"""
-    studentId = ndb.StringProperty()
-    bookId = ndb.StringProperty()
-    checkoutDate = ndb.DateProperty()
-    dueDate = ndb.DateProperty()
-    studentName = ndb.StringProperty()
-    title = ndb.StringProperty()
-    author = ndb.StringProperty()
-    language = ndb.StringProperty()
-
 class CheckoutForm(messages.Message):
     """CheckoutForm - Checkout outbound form message"""
     studentId = messages.StringField(1)
     bookId = messages.StringField(2)
     checkoutDate = messages.StringField(3)
     dueDate = messages.StringField(4)
-    websafeKey = messages.StringField(5)
-    studentName = messages.StringField(6)
-    title = messages.StringField(7)
-    author = messages.StringField(8)
-    language = messages.StringField(9)
+    studentName = messages.StringField(5)
+    title = messages.StringField(6)
+    author = messages.StringField(7)
+    language = messages.StringField(8)
 
 class CheckoutForms(messages.Message):
     """CheckoutForms - Multiple checkouts outbound form message"""
@@ -92,5 +81,5 @@ class CheckoutForms(messages.Message):
 
 class CheckoutRequestForm(messages.Message):
     """CheckoutRequestForm - for checking out or returning book"""
-    studentKey = messages.StringField(1)
+    studentId = messages.StringField(1)
     bookId = messages.StringField(2)

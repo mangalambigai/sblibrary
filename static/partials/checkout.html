@@ -20,7 +20,7 @@
             <table id="book-table" class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th>Student Name</th>
+                    <th>Student Id</th>
                     <th>Book ID</th>
                     <th>Title</th>
                     <th>Author</th>
@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="checkout in checkouts">
-                    <td>{{checkout.studentName}}</td>
+                    <td>{{checkout.studentId}}</td>
                     <td>{{checkout.bookId}}</td>
                     <td>{{checkout.title}}</td>
                     <td>{{checkout.author}}</td>
@@ -41,7 +41,7 @@
                     <td>{{checkout.dueDate}}</td>
                     <td>
                         <button class="btn btn-xs btn-primary"
-                            ng-click="checkin(checkout.websafeKey)">
+                            ng-click="checkin(checkout.bookId)">
                             Check In
                         </button>
                     </td>

@@ -18,7 +18,7 @@ from google.appengine.ext import ndb
 
 from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
-from models import Checkout, CheckoutForm, CheckoutForms, CheckoutRequestForm
+from models import CheckoutForm, CheckoutForms, CheckoutRequestForm
 
 from settings import WEB_CLIENT_ID
 
@@ -27,7 +27,7 @@ API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 
 GET_REQUEST = endpoints.ResourceContainer(
     message_types.VoidMessage,
-    websafeKey=messages.StringField(1),
+    sbId=messages.StringField(1)
 )
 
 QUERY_REQUEST = endpoints.ResourceContainer(
@@ -51,7 +51,7 @@ class SbLibraryApi(remote.Service):
         bf.author = book.author
         bf.sbId = book.sbId
         bf.language = book.language
-        bf.websafeKey = book.key.urlsafe()
+        bf.dueDate = str(book.dueDate)
         bf.check_initialized()
         return bf
 
@@ -70,8 +70,8 @@ class SbLibraryApi(remote.Service):
         q = Book.query()
         if request.sbId:
             q = q.filter( ndb.AND(
-                Book.sbId >= request.sbId,
-                Book.sbId < request.sbId + 'z' ))
+                Book.sbId >= request.sbId.upper(),
+                Book.sbId < request.sbId.upper() + 'Z' ))
         elif request.name:
             q = q.filter( ndb.AND(
                 Book.title >= request.name.lower(),
@@ -92,19 +92,20 @@ class SbLibraryApi(remote.Service):
         book = Book(key = b_key,
             title = request.title.lower(),
             author = request.author,
-            sbId = request.sbId,
+            sbId = request.sbId.upper(),
             language = request.language)
         book.put()
         return request
 
     @endpoints.method(GET_REQUEST, BookForm,
-        path='book/{websafeKey}', http_method='GET', name='getBook')
+        path='getBook', http_method='GET', name='getBook')
     def getBook(self, request):
         """get a Book"""
-        book = ndb.Key(urlsafe = request.websafeKey).get()
+        bookKey = ndb.Key(Book, request.sbId)
+        book = bookKey.get()
         if not book:
             raise endpoints.NotFoundException(
-                'No book found with key: %s' % request.websafeKey)
+                'No book found with book Id: %s' % request.sbId)
         return self._copyBookToForm(book)
 
 
@@ -112,7 +113,7 @@ class SbLibraryApi(remote.Service):
             path='book', http_method='POST', name='editBook')
     def editBook(self, request):
         """edit a book."""
-        b_key = ndb.Key(Book, request.sbId)
+        b_key = ndb.Key(Book, request.sbId.upper())
         book = b_key.get()
         book.title = request.title.lower()
         book.author = request.author
@@ -124,7 +125,7 @@ class SbLibraryApi(remote.Service):
         path='deleteBook', http_method='POST', name='deleteBook')
     def deleteBook(self, request):
         """delete a book"""
-        book_key = ndb.Key(urlsafe=request.websafeKey)
+        book_key = ndb.Key(Book, request.sbId)
         book_key.delete()
         return message_types.VoidMessage()
 
@@ -137,7 +138,6 @@ class SbLibraryApi(remote.Service):
         sf.email = student.email
         sf.cellphone = student.cellphone
         sf.sbId = student.sbId
-        sf.websafeKey = student.key.urlsafe()
         sf.check_initialized()
         return sf
 
@@ -188,13 +188,14 @@ class SbLibraryApi(remote.Service):
         return request
 
     @endpoints.method(GET_REQUEST, StudentForm,
-        path='student/{websafeKey}', http_method='GET', name='getStudent')
+        path='getStudent', http_method='GET', name='getStudent')
     def getStudent(self, request):
         """get a Student"""
-        student = ndb.Key(urlsafe = request.websafeKey).get()
+        studentKey = ndb.Key(Student, request.sbId)
+        student = studentKey.get()
         if not student:
             raise endpoints.NotFoundException(
-                'No book found with key: %s' % request.websafeKey)
+                'No book found with key: %s' % request.sbId)
         return self._copyStudentToForm(student)
 
 
@@ -214,59 +215,63 @@ class SbLibraryApi(remote.Service):
         path='deleteStudent', http_method='POST', name='deleteStudent')
     def deleteStudent(self, request):
         """delete a student"""
-        student_key = ndb.Key(urlsafe=request.websafeKey)
+        student_key = ndb.Key(Student, request.sbId)
         student_key.delete()
         return message_types.VoidMessage()
 
     #Endpoints for checkouts
 
-    @endpoints.method(CheckoutRequestForm, CheckoutForm,
+    @ndb.transactional(xg=True)
+    def _doCheckout(self, bookId, studentId):
+        today = date.today()
+        dueDate = today + timedelta(days=28)
+
+        book = ndb.Key(Book, bookId).get()
+        student = ndb.Key(Student, studentId).get()
+        student.checkedoutBookIds.append(bookId)
+        student.put()
+        book.studentId = studentId
+        book.checkoutDate = today
+        book.dueDate = dueDate
+        book.put()
+
+    @endpoints.method(CheckoutRequestForm, message_types.VoidMessage,
         path='checkout', http_method='POST', name='checkoutBook')
     def checkoutBook(self, request):
         """checkout a book"""
-        today = date.today()
-        duedate = today + timedelta(days=28)
-        parentKey = ndb.Key(urlsafe= request.studentKey)
-        student = parentKey.get()
-        checkoutId = Checkout.allocate_ids(size=1, parent=parentKey)[0]
-        checkoutKey = ndb.Key(Checkout, checkoutId, parent = parentKey)
+        self._doCheckout(request.bookId, request.studentId)
+        return message_types.VoidMessage()
 
-        book = ndb.Key(Book, request.bookId).get()
 
-        checkout = Checkout(
-            key = checkoutKey,
-            studentId = student.sbId,
-            bookId = request.bookId,
-            checkoutDate = today,
-            dueDate = duedate,
-            studentName = student.name,
-            title = book.title,
-            author = book.author,
-            language = book.language
-        )
-        checkout.put()
-        return self._copyCheckoutToForm(checkout)
+    @ndb.transactional(xg=True)
+    def _doReturn(self, bookId):
+        bookKey = ndb.Key(Book, bookId)
+        book = bookKey.get()
+        student = ndb.Key(Student, book.studentId).get()
+        student.checkedoutBookIds.remove(bookId)
+        del book.studentId
+        del book.dueDate
+        del book.checkoutDate
+        book.put()
+        student.put()
 
     @endpoints.method(GET_REQUEST, message_types.VoidMessage,
         path='return', http_method='POST', name='returnBook')
     def returnBook(self, request):
         """return a book"""
-        checkout_key = ndb.Key(urlsafe=request.websafeKey)
-        checkout_key.delete()
+        self._doReturn(request.sbId)
         return message_types.VoidMessage()
 
     def _copyCheckoutToForm(self, checkout):
         """copy checkout model to form"""
         cf = CheckoutForm()
-        cf.studentId = checkout.studentId
-        cf.bookId = checkout.bookId
+        cf.bookId = checkout.sbId
         cf.checkoutDate = str(checkout.checkoutDate)
         cf.dueDate = str(checkout.dueDate)
-        cf.studentName = checkout.studentName
         cf.title = string.capwords(checkout.title)
         cf.author = checkout.author
         cf.language = checkout.language
-        cf.websafeKey = checkout.key.urlsafe()
+        cf.studentId = checkout.studentId
         return cf
 
 
@@ -274,31 +279,36 @@ class SbLibraryApi(remote.Service):
         path='checkout', http_method='GET', name='getCheckouts')
     def getCheckouts(self, request):
         """get checkout records"""
-        q = Checkout.query()
+        q = Book.query(Book.dueDate != None)
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in q])
 
 
     @endpoints.method( GET_REQUEST, CheckoutForms,
-        path='studentcheckout', http_method='GET', name='getStudentCheckouts')
+        path='getStudentCheckouts', http_method='GET', name='getStudentCheckouts')
     def getStudentCheckouts(self, request):
         """get checkout records"""
-        student_key = ndb.Key(urlsafe=request.websafeKey)
-        q = Checkout.query(ancestor = student_key)
+        s_key = ndb.Key(Student, request.sbId)
+        student = s_key.get()
+
+        bookIds = student.checkedoutBookIds
+        ndbkeys = [ndb.Key(Book, bookId) \
+            for bookId in bookIds]
+        books = ndb.get_multi(ndbkeys)
+
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
-            for checkout in q])
+            for checkout in books])
 
     @staticmethod
     def _getOverDue():
         """returns the email ids and messages for overdue checkouts"""
-        #overdueCheckouts = Checkout.query(Checkout.duedate < date.today()) \
-        overdueCheckouts = Checkout.query() \
-            .fetch( projection=[Checkout.title, Checkout.studentId] )
+        overdueCheckouts = Book.query(Book.duedate < date.today()) \
+            .fetch( projection=[Book.title, Book.studentId] )
 
         #create a dictionary so we can consolidate the books per email
         overDueDict = {}
         for checkout in overdueCheckouts:
-            email = ndb.Key(Student,checkout.studentId).get().email,
+            email = ndb.Key(Student, studentId).get().email,
             if not email in overDueDict:
                 overDueDict[email] = []
 

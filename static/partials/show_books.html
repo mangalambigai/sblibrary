@@ -51,20 +51,20 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="book in books">
+            <tr ng-repeat="book in books" ng-dblclick="dblClick(book)">
                 <td>{{book.sbId}}</td>
                 <td>{{book.title}}</td>
                 <td>{{book.author}}</td>
                 <td>{{book.language}}</td>
                 <td>
-                    <a href="#/books/edit/{{book.websafeKey}}" >
+                    <a href="#/books/edit/{{book.sbId}}" >
                         <button class="btn btn-primary btn-xs">
                         <i class="glyphicon glyphicon-pencil"></i>Edit
                         </button>
                     </a>
                 </td>
                 <td>
-                    <a href="#/books/delete/{{book.websafeKey}}" >
+                    <a href="#/books/delete/{{book.sbId}}" >
                         <button class="btn btn-primary btn-xs">
                         <i class="glyphicon glyphicon-trash"></i>Delete
                         </button>
