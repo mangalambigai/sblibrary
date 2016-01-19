@@ -57,7 +57,8 @@ var app = angular.module('sbLibraryApp',
                     controller: 'CheckoutCtrl'
                 }).
                 when('/', {
-                    redirectTo: '/students'
+                    templateUrl: '/partials/home.html',
+                    controller: 'UserCheckoutCtrl'
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -113,7 +114,7 @@ app.factory('oauth2Provider', function ($modal) {
         CLIENT_ID: '982822415777-061tgknhd1jjdr52bmntkii0m91befrn.apps.googleusercontent.com',
         SCOPES: 'email profile',
         signedIn: false
-    }
+    };
 
     /**
      * Calls the OAuth2 authentication method.

@@ -843,7 +843,68 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
     }
 );
 
+/**
+ * @ngdoc controller
+ * @name UserCheckoutCtrl
+ *
+ * @description
+ * A controller used for home page for non admin user.
+ */
+libraryApp.controllers.controller('UserCheckoutCtrl',
+    function ($scope, $log, $routeParams, oauth2Provider, HTTP_ERRORS) {
+        /**
+         * Holds the checkouts currently displayed in the page.
+         * @type {Array}
+         */
+        $scope.checkouts = [];
 
+        $scope.init = function () {
+
+            if (!oauth2Provider.signedIn) {
+                oauth2Provider.showLoginModal();
+                return;
+            }
+
+            $scope.submitted = false;
+            $scope.loading = true;
+            $scope.checkouts = [];
+
+            //get checkouts for this user id
+
+            gapi.client.sblibrary.getUserCheckouts().
+                execute(function (resp) {
+                    $scope.$apply(function () {
+                        $scope.loading = false;
+                        if (resp.error) {
+                            // The request has failed.
+                            var errorMessage = resp.error.message || '';
+                            $scope.messages = 'Failed to query checkouts : ' +
+                                errorMessage;
+                            $scope.alertStatus = 'warning';
+                            $log.error($scope.messages );
+                        } else {
+                            // The request has succeeded.
+                            $scope.submitted = false;
+                            var count = 0;
+                            if (resp.items)
+                                count = resp.items.length;
+                            $scope.messages = 'Student has ' +
+                                 count +' books checked out ';
+                            $scope.alertStatus = 'success';
+                            $log.info($scope.messages);
+
+                            $scope.students = [];
+                            angular.forEach(resp.items, function (checkout) {
+                                $scope.checkouts.push(checkout);
+                            });
+                        }
+                        $scope.submitted = true;
+                    });
+                }
+            );
+        };
+    }
+);
 /**
  * @ngdoc controller
  * @name RootCtrl
@@ -869,7 +930,7 @@ libraryApp.controllers.controller('RootCtrl',
     /**
      * Returns the OAuth2 signedIn state.
      *
-     * @returns {oauth2Provider.signedIn|*} true if siendIn, false otherwise.
+     * @returns {oauth2Provider.signedIn|*} true if signedIn, false otherwise.
      */
     $scope.getSignedInState = function () {
         return oauth2Provider.signedIn;
@@ -942,7 +1003,7 @@ libraryApp.controllers.controller('RootCtrl',
  */
 libraryApp.controllers.controller('OAuth2LoginModalCtrl',
     function ($scope, $modalInstance, $rootScope, oauth2Provider) {
-        $scope.singInViaModal = function () {
+        $scope.signInViaModal = function () {
             oauth2Provider.signIn(function () {
                 gapi.client.oauth2.userinfo.get().execute(function (resp) {
                     $scope.$root.$apply(function () {
