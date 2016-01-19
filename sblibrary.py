@@ -47,11 +47,24 @@ class SbLibraryApi(remote.Service):
     def _copyBookToForm(self, book):
         """Copy relevant fields from Book to BookForm."""
         bf = BookForm()
+
         bf.title = string.capwords(book.title)
         bf.author = book.author
         bf.sbId = book.sbId
         bf.language = book.language
         bf.dueDate = str(book.dueDate)
+        bf.volume = book.volume
+        bf.isbn = book.isbn
+        bf.price = book.price
+        bf.notes = book.notes
+        bf.suggestedGrade = book.suggestedGrade
+        bf.category = book.category
+        bf.publisher = book.publisher
+        bf.mediaType = book.mediaType
+        bf.editionYear = book.editionYear
+        bf.donor = book.donor
+        bf.comments = book.comments
+
         bf.check_initialized()
         return bf
 
@@ -75,6 +88,7 @@ class SbLibraryApi(remote.Service):
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
         q = Book.query()
+        #TODO: get projection, not all columns
         if request.sbId:
             q = q.filter( ndb.AND(
                 Book.sbId >= request.sbId.upper(),
@@ -95,15 +109,27 @@ class SbLibraryApi(remote.Service):
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
-        b_key = ndb.Key(Book, request.sbId)
+        b_key = ndb.Key(Book, request.sbId.upper())
         if b_key.get():
             raise endpoints.ConflictException(
                 'Another book with same id already exists: %s' % request.sbId)
-        book = Book(key = b_key,
+        book = Book (key = b_key,
             title = request.title.lower(),
             author = request.author,
             sbId = request.sbId.upper(),
-            language = request.language)
+            language = request.language,
+            volume = request.volume,
+            isbn = request.isbn,
+            price = request.price,
+            notes = request.notes,
+            suggestedGrade = request.suggestedGrade,
+            category = request.category,
+            publisher = request.publisher,
+            mediaType = request.mediaType,
+            editionYear = request.editionYear,
+            donor = request.donor,
+            comments = request.comments
+            )
         book.put()
         return request
 
@@ -134,6 +160,17 @@ class SbLibraryApi(remote.Service):
         book.title = request.title.lower()
         book.author = request.author
         book.language = request.language
+        book.volume = request.volume
+        book.isbn = request.isbn
+        book.price = request.price
+        book.notes = request.notes
+        book.suggestedGrade = request.suggestedGrade
+        book.category = request.category
+        book.publisher = request.publisher
+        book.mediaType = request.mediaType
+        book.editionYear = request.editionYear
+        book.donor = request.donor
+        book.comments = request.comments
         book.put()
         return request
 
@@ -370,6 +407,23 @@ class SbLibraryApi(remote.Service):
 
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in books])
+
+    @endpoints.method( GET_REQUEST, CheckoutForms,
+        path='getUserCheckouts', http_method='GET', name='getUserCheckouts')
+    def getUserCheckouts(self, request):
+        """get checkout records for this user"""
+        user = endpoints.get_current_user()
+        students = Student.query(Student.email == user.email())
+        bookIds=[]
+        for student in students:
+            bookIds += student.checkedoutBookIds
+        ndbkeys = [ndb.Key(Book, bookId) \
+            for bookId in bookIds]
+        books = ndb.get_multi(ndbkeys)
+
+        return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
+            for checkout in books])
+
 
     @staticmethod
     def _getOverDue():

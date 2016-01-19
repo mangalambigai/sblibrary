@@ -10,36 +10,128 @@
         </div>
     </div>
     <div class="row" ng-init="init()">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <h3>Edit book "{{book.title}}"</h3>
 
-            <form name="bookForm" novalidate role="form">
+            <form class="form-horizontal" name="bookForm" novalidate role="form">
                 <div class="form-group">
-                    <label for="sbid">Book ID<span class="required">*</span></label>
-                    <input id="sbid" type="text" name="sbid" ng-model="book.sbId" class="form-control" ng-disabled="true"/>
+                    <label for="sbid" class="col-sm-2">Book ID<span class="required">*</span></label>
+                    <div class="col-sm-10">
+                    <input id="sbid" type="text" name="sbid" ng-model="book.sbId" class="form-control" ng-required="true"/>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="language">Language</label>
-                    <select id="language" ng-model="book.language" name="language" ng-options="language for language in languages"
-                            class="form-control" >
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="title">Title</label>
+                    <label for="title" class="col-sm-2">Title</label>
+                    <div class="col-sm-10">
                     <input id="title" type="text" name="title" ng-model="book.title" class="form-control"
                            ng-required="true"/>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="author">Author</label>
+                    <label for="volume" class="col-sm-2">Volume</label>
+                    <div class="col-sm-10">
+                    <input id="volume" type="text" name="volume" ng-model="book.volume" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="author" class="col-sm-2">Author</label>
+                    <div class="col-sm-10">
                     <input id="author" type="text" ng-model="book.author" name="author" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="language" class="col-sm-2">Language</label>
+                    <div class="col-sm-10">
+                    <select id="language" ng-model="book.language" name="language" ng-options="language for language in languages"
+                            class="form-control">
+                    </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="isbn" class="col-sm-2">ISBN</label>
+                    <div class="col-sm-10">
+                    <input id="isbn" type="text" name="volume" ng-model="book.isbn" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="price" class="col-sm-2">Price</label>
+                    <div class="col-sm-10">
+                    <input id="price" type="text" name="price" ng-model="book.price" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="grade" class="col-sm-2">Suggested Grades:</label>
+                    <div class="col-sm-10">
+                    <select id="grade" type="text" name="grade" ng-model="book.suggestedGrade" class="form-control" multiple="true">
+                        <option value="K">Kindergarten</option>
+                        <option value="GRADE1">Grade 1</option>
+                        <option value="GRADE2">Grade 2</option>
+                        <option value="GRADE3">Grade 3</option>
+                        <option value="GRADE4">Grade 4</option>
+                        <option value="GRADE5">Grade 5</option>
+                        <option value="GRADE6">Grade 6</option>
+                        <option value="GRADE7">Grade 7</option>
+                        <option value="GRADE8">Grade 8</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="col-sm-2">Category</label>
+                    <div class="col-sm-10">
+                    <input id="category" type="text" name="category" ng-model="book.category" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="publisher" class="col-sm-2">Publisher</label>
+                    <div class="col-sm-10">
+                    <input id="publisher" type="text" name="publisher" ng-model="book.publisher" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mediatype" class="col-sm-2">Media Type</label>
+                    <div class="col-sm-10">
+                    <select id="mediatype" name="mediatype" ng-model="book.mediaType" class="form-control">
+                        <option value="BOOK">Book</option>
+                        <option value="CD">CD</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editionyear" class="col-sm-2">Edition Year</label>
+                    <div class="col-sm-10">
+                    <input id="editionyear" type="text" name="editionyear" ng-model="book.editionYear" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="donor" class="col-sm-2">Donor</label>
+                    <div class="col-sm-10">
+                    <input id="donor" type="text" name="donor" ng-model="book.donor" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comments" class="col-sm-2">Comments</label>
+                    <div class="col-sm-10">
+                    <input id="comments" type="text" name="comments" ng-model="book.comments" class="form-control"/>
+                    </div>
                 </div>
 
                 <button ng-click="updateBook(bookForm)" class="btn btn-primary"
                         ng-disabled="!isValidBook(bookForm) || loading">Update
                 </button>
+
                 <a href="#/books">
                     <button class="btn btn-primary">Back</button>
                 </a>
