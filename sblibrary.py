@@ -44,14 +44,9 @@ QUERY_REQUEST = endpoints.ResourceContainer(
 class SbLibraryApi(remote.Service):
     """SB Library API v0.1"""
 
-    def _isAdmin(self):
-        user = endpoints.get_current_user()
-        if not user:
-            raise endpoints.UnauthorizedException('Authorization required')
-        return user.email() in ADMINS
-
     def _ensureAdmin(self):
-        if self._isAdmin() == False:
+        user = users.get_current_user()
+        if not user or not users.is_current_user_admin():
             raise endpoints.UnauthorizedException('Admin rights required')
 
     #Endpoints for Books
@@ -141,9 +136,10 @@ class SbLibraryApi(remote.Service):
         path='getBook', http_method='GET', name='getBook')
     def getBook(self, request):
         """get a Book"""
-        user = endpoints.get_current_user()
+        user = users.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
+
         bookKey = ndb.Key(Book, request.sbId)
         book = bookKey.get()
         if not book:
