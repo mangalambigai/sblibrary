@@ -15,8 +15,8 @@ from protorpc import message_types
 from protorpc import remote
 
 from google.appengine.ext import ndb
+from google.appengine.api import users
 
-from models import Role, RoleForm
 from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
 from models import CheckoutForm, CheckoutForms, CheckoutRequestForm
@@ -53,18 +53,6 @@ class SbLibraryApi(remote.Service):
     def _ensureAdmin(self):
         if self._isAdmin() == False:
             raise endpoints.UnauthorizedException('Admin rights required')
-
-
-    @endpoints.method(message_types.VoidMessage, RoleForm,
-            path='role', http_method='GET', name='getRole')
-    def getRole(self, request):
-        """Return the user's role."""
-        if self._isAdmin():
-            return RoleForm(role = Role.ADMIN)
-        else:
-            return RoleForm(role = Role.USER)
-
-
 
     #Endpoints for Books
     def _copyBookToForm(self, book):
@@ -402,7 +390,10 @@ class SbLibraryApi(remote.Service):
         path='getUserCheckouts', http_method='GET', name='getUserCheckouts')
     def getUserCheckouts(self, request):
         """get checkout records for this user"""
-        user = endpoints.get_current_user()
+        user = users.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
+
         students = Student.query(Student.email == user.email())
         bookIds=[]
         for student in students:

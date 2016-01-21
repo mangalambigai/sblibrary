@@ -22,28 +22,40 @@
          * so that Google JavaScript library ready in the angular modules.
          */
         function init() {
-            var ROOT = '//' + window.location.host + '/_ah/api';
-            console.log(ROOT);
-            gapi.client.load('sblibrary', 'v1', function () {
-                console.log('after sblibrary load');
-                gapi.client.load('oauth2', 'v2', function() {
-                    console.log('after oauth2 load');
-                    angular.bootstrap(document, ['sbLibraryApp']);
-                });
-            }, ROOT);
+            gapi.client.load('sblibrary', 'v1', null, '//' + window.location.host + '/_ah/api');
+            gapi.client.load('oauth2', 'v2', function () {
+                angular.bootstrap(document, ['sbLibraryApp']);
+            });
         };
     </script>
-    <script src="https://apis.google.com/js/client.js?onload=init">
-    </script>
+    <script src="//apis.google.com/js/client:plusone.js?onload=init"></script>
 </head>
 
 <!-- Restore the credential from cookie if stored by calling initSignInButton() -->
-<body ng-controller="RootCtrl">
+<body ng-controller="RootCtrl" ng-init="initSignInButton()">
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a class="navbar-brand" href="/">Shishu Bharati Library</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li ng-class="{ active: isActive('/checkouts')}" ng-click="collapseNavbar()"><a href="#/checkouts">Check-in</a></li>
+                <li ng-class="{ active: isActive('/students')}" ng-click="collapseNavbar()"><a href="#/students">Manage Students / Check-out</a></li>
+                <li ng-class="{ active: isActive('/books')}" ng-click="collapseNavbar()"><a href="#/books" >Manage Books</a></li>
+                <li class="nav-divider"></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="signInLink" ng-hide="getSignedInState()"><a ng-click="signIn(); collapseNavbar()">Google+ SignIn</a></li>
+                <li id="signOutLink" ng-show="getSignedInState()"><a ng-click="signOut(); collapseNavbar()">Log out</a></li>
+            </ul>
         </div>
     </div>
 </div>
@@ -66,6 +78,9 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="/js/app.js"></script>
 <script src="/js/controllers.js"></script>
+
+<!-- Put the signInButton to invoke the gapi.signin.render to restore the credential if stored in cookie. -->
+<span id="signInButton" style="display: none" disabled="true"></span>
 
 </body>
 </html>

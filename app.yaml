@@ -24,7 +24,16 @@ handlers:       #static then dynamic
 - url: /
   static_files: templates/index.html
   upload: templates/index\.html
+  login: required
+  auth_fail_action: redirect
   secure: always
+
+- url: /admin
+  static_files: templates/admin.html
+  upload: templates/admin\.html
+  secure: always
+  auth_fail_action: redirect
+  login: admin
 
 - url: /_ah/spi/.*
   script: sblibrary.api
