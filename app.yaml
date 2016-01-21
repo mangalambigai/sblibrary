@@ -34,6 +34,15 @@ handlers:       #static then dynamic
   script: main.app
   login: admin
 
+- url: /google848be8bc1952dbd2.html
+  static_files: templates/google848be8bc1952dbd2.html
+  upload: templates/google848be8bc1952dbd2\.html
+
+- url: /tasks/gcsupload
+  script: main.app
+  login: admin
+
+
 libraries:
 
 - name: endpoints
