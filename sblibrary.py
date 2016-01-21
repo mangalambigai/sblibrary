@@ -8,8 +8,7 @@ author -- mangalambigais@gmail.com
 """
 from datetime import datetime, date, timedelta
 
-import endpoints
-import string
+import endpoints, string, logging
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
@@ -46,6 +45,7 @@ class SbLibraryApi(remote.Service):
 
     def _ensureAdmin(self):
         user = users.get_current_user()
+        logging.info('user logged in as ' + user.email())
         if not user or not users.is_current_user_admin():
             raise endpoints.UnauthorizedException('Admin rights required')
 
