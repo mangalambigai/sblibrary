@@ -21,7 +21,7 @@ from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
 from models import CheckoutForm, CheckoutForms, CheckoutRequestForm
 
-from settings import WEB_CLIENT_ID, ADMINS
+from settings import WEB_CLIENT_ID
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
