@@ -10,3 +10,4 @@ SB Library server-side Python App Engine app user settings
 # Console or Cloud Console.
 WEB_CLIENT_ID = '982822415777-061tgknhd1jjdr52bmntkii0m91befrn.apps.googleusercontent.com'
 
+ADMINS = ['mangalambigais@gmail.com']

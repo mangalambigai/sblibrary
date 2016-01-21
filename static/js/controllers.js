@@ -936,6 +936,27 @@ libraryApp.controllers.controller('RootCtrl',
         return oauth2Provider.signedIn;
     };
 
+    $scope.getRole = function () {
+        gapi.client.sblibrary.getRole().execute(function (resp) {
+            $scope.$apply(function () {
+                if (resp.error) {
+                    // The request has failed.
+                    var errorMessage = resp.error.message || '';
+                    $scope.messages = 'Failed to query checkouts : ' +
+                        errorMessage;
+                    $scope.alertStatus = 'warning';
+                    $log.error($scope.messages );
+                } else {
+                    // The request has succeeded.
+                    $scope.submitted = false;
+                    console.log ('getRole returned'+resp.role);
+                    $scope.admin = true;
+                }
+                $scope.submitted = true;
+            });
+        });
+    };
+
     /**
      * Calls the OAuth2 authentication method.
      */
@@ -947,6 +968,7 @@ libraryApp.controllers.controller('RootCtrl',
                         oauth2Provider.signedIn = true;
                         $scope.alertStatus = 'success';
                         $scope.rootMessages = 'Logged in with ' + resp.email;
+                        $scope.getRole();
                     }
                 });
             });
@@ -965,6 +987,7 @@ libraryApp.controllers.controller('RootCtrl',
                 if (gapi.auth.getToken() && gapi.auth.getToken().access_token) {
                     $scope.$apply(function () {
                         oauth2Provider.signedIn = true;
+                        $scope.getRole();
                     });
                 }
             },

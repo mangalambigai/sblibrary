@@ -12,6 +12,14 @@ from protorpc import messages
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 
+
+class Role(messages.Enum):
+    USER = 1
+    ADMIN = 2
+
+class RoleForm(messages.Message):
+    role = messages.EnumField('Role', 1)
+
 #Book models
 
 class Grade(messages.Enum):
