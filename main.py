@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""
+main.py -- Shishu Bharathi Library server-side Python App Engine
+    HTTP controller handlers for memcache & task queue access
+"""
+
 import webapp2
 from google.appengine.api import app_identity
 from google.appengine.api import mail
@@ -11,6 +16,7 @@ import os, csv
 import cloudstorage as gcs
 from models import Book, Grade, Media
 
+#TODO: set the task to never retry
 class UploadGCSData(webapp2.RequestHandler):
     def get(self):
         #bucket_name = os.environ.get('BUCKET_NAME',
@@ -26,22 +32,35 @@ class UploadGCSData(webapp2.RequestHandler):
         entities = []
         for row in datareader:
             count += 1
-            newProd = Book(sbId=row[0],
-                title=row[1].lower(),
-                volume=row[2],
-                author=row[3],
-                isbn = row[4],
-                price = row[5],
-                #language = row[6],
-                notes = row[8],
-                #suggestedGrade = row[9],
-                category = row[10],
-                publisher = row[15],
-                #mediaType = row[18],
-                donor = row[20],
-                comments = row[25]
-                )
-            entities.append(newProd)
+            #TODO: Pass the enums
+            if len(row[1]) > 0:
+                booktitle = row[1].lower()
+                booksbId = row[0]
+                #convert 1/4/3101 to 3101-04--01
+                if booksbId.find('/')>-1:
+                    list = booksbId.split('/')
+                    if len(list)>1:
+                        booksbId = list[2] + '-0'+list[1] +'--0'+list[0]
+
+                b_key = ndb.Key(Book, booksbId.upper())
+                newProd = Book(
+                    key = b_key,
+                    sbId = booksbId,
+                    title = booktitle,
+                    volume = row[2],
+                    author = row[3],
+                    isbn = row[4],
+                    price = row[5],
+                    #language = row[6],
+                    notes = row[8],
+                    #suggestedGrade = row[9],
+                    category = row[10],
+                    publisher = row[15],
+                    #mediaType = row[18],
+                    donor = row[20],
+                    comments = row[25]
+                    )
+                entities.append(newProd)
 
             if count%50==0 and entities:
                 ndb.put_multi(entities)
