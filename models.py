@@ -14,6 +14,17 @@ from google.appengine.ext.ndb import msgprop
 
 #Book models
 
+class Language(messages.Enum):
+    """Language - enumeration value"""
+    ENGLISH = 1
+    HINDI = 2
+    TAMIL = 3
+    TELUGU = 4
+    KANNADA = 5
+    GUJARATHI = 6
+    MARATHI = 7
+    SANSKRIT = 8
+
 class Grade(messages.Enum):
     GRADE1 = 1
     GRADE2 = 2
@@ -29,13 +40,14 @@ class Grade(messages.Enum):
 class Media(messages.Enum):
     BOOK = 1
     CD = 2
+    DICTIONARY = 3
 
 class Book(ndb.Model):
     """Book - Book object"""
     sbId = ndb.StringProperty()
     title = ndb.StringProperty()
     author = ndb.StringProperty(indexed = False)
-    language = ndb.StringProperty(indexed = False)
+    language = msgprop.EnumProperty(Language, indexed = False)
     studentId = ndb.StringProperty()
     checkoutDate = ndb.DateProperty(indexed = False)
     dueDate = ndb.DateProperty()
@@ -53,20 +65,12 @@ class Book(ndb.Model):
     comments = ndb.StringProperty(indexed = False)
 
 
-class Language(messages.Enum):
-    """Language - enumeration value"""
-    English = 1
-    Hindi = 2
-    Tamil = 3
-    Telugu = 4
-    Kannada = 5
-
 class BookForm(messages.Message):
     """BookForm - Book outbound from message"""
     sbId = messages.StringField(1)
     title = messages.StringField(2)
     author = messages.StringField(3)
-    language = messages.StringField(4)
+    language = messages.EnumField('Language', 4)
     dueDate = messages.StringField(5)
     volume = messages.StringField(6)
     isbn = messages.StringField(7)

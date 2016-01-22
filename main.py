@@ -10,11 +10,11 @@ from google.appengine.api import mail
 from sblibrary import SbLibraryApi
 from google.appengine.ext import ndb
 
-import cgi
+import cgi, string
 import logging
 import os, csv
 import cloudstorage as gcs
-from models import Book, Grade, Media
+from models import Book, Grade, Media, Language
 
 #TODO: set the task to never retry
 class UploadGCSData(webapp2.RequestHandler):
@@ -24,6 +24,32 @@ class UploadGCSData(webapp2.RequestHandler):
         #bucket = '/' + bucket_name
         #filename = bucket + '/LibraryBook1.csv'
         self.upload_file('/sb-library.appspot.com/LibraryBook1.csv')
+
+    def _isNumber(self, s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+
+    def _getGrade(self, grade):
+        if grade == 1:
+            return Grade.GRADE1
+        elif grade == 2:
+            return Grade.GRADE2
+        elif grade == 3:
+            return Grade.GRADE3
+        elif grade == 4:
+            return Grade.GRADE4
+        elif grade == 5:
+            return Grade.GRADE5
+        elif grade == 6:
+            return Grade.GRADE6
+        elif grade == 7:
+            return Grade.GRADE7
+        elif grade == 8:
+            return Grade.GRADE8
+
 
     def upload_file(self, filename):
         gcs_file = gcs.open(filename)
@@ -43,7 +69,7 @@ class UploadGCSData(webapp2.RequestHandler):
                         booksbId = list[2] + '-0'+list[1] +'--0'+list[0]
 
                 b_key = ndb.Key(Book, booksbId.upper())
-                newProd = Book(
+                newBook = Book(
                     key = b_key,
                     sbId = booksbId,
                     title = booktitle,
@@ -60,7 +86,50 @@ class UploadGCSData(webapp2.RequestHandler):
                     donor = row[20],
                     comments = row[25]
                     )
-                entities.append(newProd)
+
+                if row[6]:
+                    lang = row[6]
+                    if lang == 'English':
+                        newBook.language = Language.ENGLISH
+                    elif lang == 'Tamil':
+                        newBook.language = Language.TAMIL
+                    elif lang == 'Gujarathi':
+                        newBook.language = Language.GUJARATHI
+                    elif string.find(lang, 'Hindi')>-1:
+                        newBook.language = Language.HINDI
+
+                if row[9]:
+                    grade = row[9]
+                    if grade == 'KG':
+                        newBook.suggestedGrade.append(Grade.K)
+                    elif self._isNumber(grade):
+                        newBook.suggestedGrade.append(self._getGrade(int(grade)))
+                    elif grade == 'Adult':
+                        newBook.suggestedGrade.append(Grade.ADULT)
+                    else:
+                        minGrade = 0
+                        if string.find(grade, '-Jan')>-1:
+                            maxGrade = grade[0]
+                            minGrade = 1
+                        elif string.find(grade, '-Feb')>-1:
+                            minGrade = 2
+                            maxGrade = grade[0]
+                        elif string.find(grade, '-Mar')>-1:
+                            minGrade = 3
+                            maxGrade = grade[0]
+                        if minGrade > 0:
+                            for i in range(minGrade, int(maxGrade)+1):
+                                newBook.suggestedGrade.append(self._getGrade(i))
+
+                if row[16]:
+                    if row[16] == 'Book':
+                        newBook.mediaType = Media.BOOK
+                    elif row[16] == 'Dictionary':
+                        newBook.mediaType = Media.DICTIONARY
+                    elif string.find(row[16], 'CD')>-1:
+                        newBook.mediaType = Media.CD
+
+                entities.append(newBook)
 
             if count%50==0 and entities:
                 ndb.put_multi(entities)
