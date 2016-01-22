@@ -33,17 +33,6 @@ libraryApp.controllers.controller('CreateBookCtrl',
          */
         $scope.book = $scope.book || {};
 
-        $scope.languages = [
-            'English',
-            'Tamil',
-            'Kannada',
-            'Telugu',
-            'Hindi',
-            'Gujarathi',
-            'Marathi',
-            'Sanskrit'
-        ];
-
         /**
          * Tests if $scope.book is valid.
          * @param bookForm the form object from the create_book.html page.
@@ -102,17 +91,6 @@ libraryApp.controllers.controller('EditBookCtrl',
          * @type {{}|*}
          */
         $scope.book =  {};
-
-        $scope.languages = [
-            'English',
-            'Tamil',
-            'Kannada',
-            'Telugu',
-            'Hindi',
-            'Gujarathi',
-            'Marathi',
-            'Sanskrit'
-        ];
 
         $scope.init = function() {
             $scope.loading = true;

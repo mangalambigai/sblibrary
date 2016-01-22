@@ -46,8 +46,15 @@
                 <div class="form-group">
                     <label for="language" class="col-sm-2">Language</label>
                     <div class="col-sm-10">
-                    <select id="language" ng-model="book.language" name="language" ng-options="language for language in languages"
-                            class="form-control">
+                    <select id="language" ng-model="book.language" name="language" class="form-control">
+                        <option value="ENGLISH">English</option>
+                        <option value="HINDI">Hindi</option>
+                        <option value="TAMIL">Tamil</option>
+                        <option value="TELUGU">Telugu</option>
+                        <option value="KANNADA">Kannada</option>
+                        <option value="GUJARATHI">Gujarathi</option>
+                        <option value="MARATHI">Marathi</option>
+                        <option value="SANSKRIT">Sanskrit</option>
                     </select>
                     </div>
                 </div>
@@ -76,7 +83,7 @@
                 <div class="form-group">
                     <label for="grade" class="col-sm-2">Suggested Grades:</label>
                     <div class="col-sm-10">
-                    <select id="grade" type="text" name="grade" ng-model="book.suggestedGrade" class="form-control" multiple="true">
+                    <select id="grade" name="grade" ng-model="book.suggestedGrade" class="form-control" multiple="true">
                         <option value="K">Kindergarten</option>
                         <option value="GRADE1">Grade 1</option>
                         <option value="GRADE2">Grade 2</option>
