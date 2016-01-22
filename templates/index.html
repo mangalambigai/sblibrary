@@ -52,8 +52,14 @@
             <a class="navbar-brand" href="/">Shishu Bharati Library</a>
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li ng-class="{ active: isActive('/checkouts')}" ng-click="collapseNavbar()"><a href="#/checkouts">Check-in</a></li>
+                <li ng-class="{ active: isActive('/students')}" ng-click="collapseNavbar()"><a href="#/students">Manage Students / Check-out</a></li>
+                <li ng-class="{ active: isActive('/books')}" ng-click="collapseNavbar()"><a href="#/books" >Manage Books</a></li>
+                <li class="nav-divider"></li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li id="signInLink" ng-hide="getSignedInState()"><a ng-click="signIn(); collapseNavbar()">Google+ SignIn</a></li>
+                <li id="signInLink" ng-hide="getSignedInState()"><a ng-click="signIn(false); collapseNavbar()">Google+ SignIn</a></li>
                 <li id="signOutLink" ng-show="getSignedInState()"><a ng-click="signOut(); collapseNavbar()">Log out</a></li>
             </ul>
         </div>

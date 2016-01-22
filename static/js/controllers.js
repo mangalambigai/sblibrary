@@ -859,13 +859,6 @@ libraryApp.controllers.controller('UserCheckoutCtrl',
         $scope.checkouts = [];
 
         $scope.init = function () {
-
-/*            if (!oauth2Provider.signedIn) {
-                oauth2Provider.showLoginModal();
-                return;
-            }
-
-*/
             $scope.submitted = false;
             $scope.loading = true;
             $scope.checkouts = [];
@@ -940,8 +933,8 @@ libraryApp.controllers.controller('RootCtrl',
     /**
      * Calls the OAuth2 authentication method.
      */
-    $scope.signIn = function () {
-        oauth2Provider.signIn(function () {
+    $scope.signIn = function (mode) {
+        oauth2Provider.signIn(mode, function () {
             gapi.client.oauth2.userinfo.get().execute(function (resp) {
                 $scope.$apply(function () {
                     if (resp.email) {
@@ -960,6 +953,9 @@ libraryApp.controllers.controller('RootCtrl',
      *  after the rendering)
      */
     $scope.initSignInButton = function () {
+
+        $scope.signIn(true);
+        /*
         gapi.signin.render('signInButton', {
             'callback': function () {
                 jQuery('#signInButton button').attr('disabled', 'true').css('cursor', 'default');
@@ -973,6 +969,7 @@ libraryApp.controllers.controller('RootCtrl',
             'cookiepolicy': 'single_host_origin',
             'scope': oauth2Provider.SCOPES
         });
+    */
     };
 
     /**
@@ -993,29 +990,4 @@ libraryApp.controllers.controller('RootCtrl',
 
 });
 
-
-/**
- * @ngdoc controller
- * @name OAuth2LoginModalCtrl
- *
- * @description
- * The controller for the modal dialog that is shown when an user needs to login to achive some functions.
- *
- */
-libraryApp.controllers.controller('OAuth2LoginModalCtrl',
-    function ($scope, $modalInstance, $rootScope, oauth2Provider) {
-        $scope.signInViaModal = function () {
-            oauth2Provider.signIn(function () {
-                gapi.client.oauth2.userinfo.get().execute(function (resp) {
-                    $scope.$root.$apply(function () {
-                        oauth2Provider.signedIn = true;
-                        $scope.$root.alertStatus = 'success';
-                        $scope.$root.rootMessages = 'Logged in with ' + resp.email;
-                    });
-
-                    $modalInstance.close();
-                });
-            });
-        };
-    });
 

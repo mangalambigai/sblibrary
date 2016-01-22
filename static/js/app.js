@@ -57,8 +57,7 @@ var app = angular.module('sbLibraryApp',
                     controller: 'CheckoutCtrl'
                 }).
                 when('/', {
-                    templateUrl: '/partials/home.html',
-                    controller: 'UserCheckoutCtrl'
+                    redirectTo: '/checkouts'
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -119,8 +118,12 @@ app.factory('oauth2Provider', function ($modal) {
     /**
      * Calls the OAuth2 authentication method.
      */
-    oauth2Provider.signIn = function (callback) {
-        gapi.auth.signIn({
+    oauth2Provider.signIn = function (mode, callback) {
+        gapi.auth.authorize({client_id: oauth2Provider.CLIENT_ID,
+            scope: oauth2Provider.SCOPES},
+            callback);
+
+/*        gapi.auth.signIn({
             'clientid': oauth2Provider.CLIENT_ID,
             'cookiepolicy': 'single_host_origin',
             'accesstype': 'online',
@@ -128,7 +131,7 @@ app.factory('oauth2Provider', function ($modal) {
             'scope': oauth2Provider.SCOPES,
             'callback': callback
         });
-    };
+  */  };
 
     /**
      * Logs out the user.
@@ -138,19 +141,6 @@ app.factory('oauth2Provider', function ($modal) {
         // Explicitly set the invalid access token in order to make the API calls fail.
         gapi.auth.setToken({access_token: ''})
         oauth2Provider.signedIn = false;
-    };
-
-    /**
-     * Shows the modal with Google+ sign in button.
-     *
-     * @returns {*|Window}
-     */
-    oauth2Provider.showLoginModal = function() {
-        var modalInstance = $modal.open({
-            templateUrl: '/partials/login.modal.html',
-            controller: 'OAuth2LoginModalCtrl'
-        });
-        return modalInstance;
     };
 
     return oauth2Provider;

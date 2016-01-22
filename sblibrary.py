@@ -20,7 +20,8 @@ from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
 from models import CheckoutForm, CheckoutForms, CheckoutRequestForm
 
-from settings import WEB_CLIENT_ID
+from settings import WEB_CLIENT_ID, WEB_CLIENT_ID_WALPOLE
+from google.appengine.api import oauth
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
@@ -38,15 +39,18 @@ QUERY_REQUEST = endpoints.ResourceContainer(
 
 @endpoints.api( name='sblibrary',
                 version='v1',
-                allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
+                allowed_client_ids=[WEB_CLIENT_ID, WEB_CLIENT_ID_WALPOLE, API_EXPLORER_CLIENT_ID],
                 scopes=[EMAIL_SCOPE])
 class SbLibraryApi(remote.Service):
     """SB Library API v0.1"""
 
     def _ensureAdmin(self):
-        user = users.get_current_user()
-        logging.info('user logged in as ' + user.email())
-        if not user or not users.is_current_user_admin():
+        user = endpoints.get_current_user()
+        if user:
+            logging.info('user logged in as ' + user.email())
+            if not oauth.is_current_user_admin(EMAIL_SCOPE):
+                raise endpoints.UnauthorizedException('Admin rights required')
+        else:
             raise endpoints.UnauthorizedException('Admin rights required')
 
     #Endpoints for Books
@@ -136,7 +140,7 @@ class SbLibraryApi(remote.Service):
         path='getBook', http_method='GET', name='getBook')
     def getBook(self, request):
         """get a Book"""
-        user = users.get_current_user()
+        user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
 
@@ -386,7 +390,7 @@ class SbLibraryApi(remote.Service):
         path='getUserCheckouts', http_method='GET', name='getUserCheckouts')
     def getUserCheckouts(self, request):
         """get checkout records for this user"""
-        user = users.get_current_user()
+        user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
 
