@@ -67,6 +67,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="notes" class="col-sm-2">Notes</label>
+                    <div class="col-sm-10">
+                    <input id="notes" type="text" name="notes" ng-model="book.notes" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="grade" class="col-sm-2">Suggested Grades:</label>
                     <div class="col-sm-10">
                     <select id="grade" type="text" name="grade" ng-model="book.suggestedGrade" class="form-control" multiple="true">
