@@ -82,7 +82,7 @@ class UploadGCSData(webapp2.RequestHandler):
                     #suggestedGrade = row[9],
                     category = row[10],
                     publisher = row[15],
-                    #mediaType = row[18],
+                    editionYear = row[18],
                     donor = row[20],
                     comments = row[25]
                     )
