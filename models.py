@@ -118,7 +118,7 @@ class CheckoutForm(messages.Message):
     studentName = messages.StringField(5)
     title = messages.StringField(6)
     author = messages.StringField(7)
-    language = messages.StringField(8)
+    language = messages.EnumField('Language', 8)
 
 class CheckoutForms(messages.Message):
     """CheckoutForms - Multiple checkouts outbound form message"""
