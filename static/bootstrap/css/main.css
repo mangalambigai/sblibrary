@@ -93,3 +93,10 @@ body {
         margin: 10px;
     }
 }
+
+/**
+ * This is to avoid visible-xs creating a new line for each span
+ */
+.visible-xs {
+    display: inline-block!important;
+}

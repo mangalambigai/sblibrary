@@ -24,24 +24,24 @@
             <label for="searchName">or Name:</label>
             <input name="searchName" id="searchName" type="text" ng-model="searchName" class="form-control"/>
 
-            <button ng-click="queryStudents();" class="btn btn-primary">
+            <button ng-click="queryStudents();" class="btn-md btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search
             </button>
-            <span class="label label-danger"
-                ng-show="searchId.length>0 && searchName.length>0">We can only search on one field!</span>
 
             <a href="#/students/create" >
-                <button class="btn btn-primary pull-right">
+                <button class="btn-md btn-primary pull-right">
                     <i class="glyphicon glyphicon-plus"></i> Add Student
                 </button>
             </a>
+            <span class="label label-danger"
+                ng-show="searchId.length>0 && searchName.length>0">We can only search on one field!</span>
         </div>
     </form>
 
     <div ng-show="submitted && students.length == 0">
         <h4>No matching results.</h4>
     </div>
-    <div class="table-responsive" ng-show="students.length > 0">
+    <div ng-show="students.length > 0">
         <table id="book-table" class="table table-striped table-hover">
             <thead>
             <tr>
@@ -53,10 +53,10 @@
             </thead>
             <tbody>
             <tr ng-repeat="student in students" ng-dblclick="dblClick(student)">
-                <td>{{student.sbId}}</td>
-                <td>{{student.name}}</td>
-                <td>{{student.email}}</td>
-                <td>{{student.cellphone}}</td>
+                <td><strong class="visible-xs">Student ID: </strong>{{student.sbId}}</td>
+                <td><strong class="visible-xs">Name: </strong>{{student.name}}</td>
+                <td><strong class="visible-xs">Email: </strong>{{student.email}}</td>
+                <td><strong class="visible-xs">Cell Phone: </strong>{{student.cellphone}}</td>
                 <td>
                     <a href="#/students/checkout/{{student.sbId}}" >
                         <button class="btn btn-primary btn-xs">

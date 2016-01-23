@@ -24,7 +24,7 @@
             <label for="titlesearch">or Enter Title:</label>
             <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
 
-            <button ng-click="queryCheckouts();" class="btn btn-primary">
+            <button ng-click="queryCheckouts();" class="btn-md btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search
             </button>
 
@@ -39,7 +39,7 @@
         <h4>No matching results.</h4>
     </div>
 
-    <div class="table-responsive" ng-show="checkouts.length > 0">
+    <div ng-show="checkouts.length > 0">
         <table id="book-table" class="table table-striped table-hover">
             <thead>
             <tr>
@@ -55,13 +55,13 @@
             </thead>
             <tbody>
             <tr ng-repeat="checkout in checkouts">
-                <td>{{checkout.studentId}}</td>
-                <td>{{checkout.bookId}}</td>
-                <td>{{checkout.title}}</td>
-                <td>{{checkout.author}}</td>
-                <td>{{checkout.language}}</td>
-                <td>{{checkout.checkoutDate}}</td>
-                <td>{{checkout.dueDate}}</td>
+                <td><strong class="visible-xs">Student ID: </strong>{{checkout.studentId}}</td>
+                <td><strong class="visible-xs">Book ID: </strong>{{checkout.bookId}}</td>
+                <td><strong class="visible-xs">Title: </strong>{{checkout.title}}</td>
+                <td><strong class="visible-xs">Author: </strong>{{checkout.author}}</td>
+                <td><strong class="visible-xs">Language: </strong>{{checkout.language}}</td>
+                <td><strong class="visible-xs">Checkout Date: </strong>{{checkout.checkoutDate}}</td>
+                <td><strong class="visible-xs">Due Date: </strong>{{checkout.dueDate}}</td>
                 <td>
                     <button class="btn btn-xs btn-primary" ng-click="checkin(checkout)" ng-show="!checkout.checkedIn">
                         Check In
