@@ -74,6 +74,11 @@ class SbLibraryApi(remote.Service):
         bf.editionYear = book.editionYear
         bf.donor = book.donor
         bf.comments = book.comments
+        bf.createdBy = book.createdBy
+        bf.createdDate = str(book.createdDate)
+        bf.lastUpdatedBy = book.lastUpdatedBy
+        bf.lastUpdatedDate = str(book.lastUpdatedDate)
+        bf.reference = book.reference
 
         bf.check_initialized()
         return bf
@@ -116,6 +121,9 @@ class SbLibraryApi(remote.Service):
         if b_key.get():
             raise endpoints.ConflictException(
                 'Another book with same id already exists: %s' % request.sbId)
+
+        email = endpoints.get_current_user().email()
+
         book = Book (key = b_key,
             title = request.title.lower(),
             author = request.author,
@@ -131,7 +139,10 @@ class SbLibraryApi(remote.Service):
             mediaType = request.mediaType,
             editionYear = request.editionYear,
             donor = request.donor,
-            comments = request.comments
+            comments = request.comments,
+            reference = request.reference,
+            createdBy = email,
+            createdDate = date.today()
             )
         book.put()
         return request
@@ -157,6 +168,9 @@ class SbLibraryApi(remote.Service):
     def editBook(self, request):
         """edit a book."""
         self._ensureAdmin()
+
+        email = endpoints.get_current_user().email()
+
         b_key = ndb.Key(Book, request.sbId.upper())
         book = b_key.get()
         book.title = request.title.lower()
@@ -173,6 +187,9 @@ class SbLibraryApi(remote.Service):
         book.editionYear = request.editionYear
         book.donor = request.donor
         book.comments = request.comments
+        book.reference = request.reference
+        book.lastUpdatedBy = email
+        book.lastUpdatedDate = date.today()
         book.put()
         return request
 

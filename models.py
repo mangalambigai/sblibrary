@@ -63,6 +63,11 @@ class Book(ndb.Model):
     editionYear = ndb.StringProperty(indexed = False)
     donor = ndb.StringProperty(indexed = False)
     comments = ndb.StringProperty(indexed = False)
+    createdBy = ndb.StringProperty(indexed = False)
+    createdDate = ndb.DateProperty(indexed = False)
+    lastUpdatedBy = ndb.StringProperty(indexed = False)
+    lastUpdatedDate = ndb.StringProperty(indexed = False)
+    reference = ndb.BooleanProperty(indexed = False)
 
 
 class BookForm(messages.Message):
@@ -83,6 +88,11 @@ class BookForm(messages.Message):
     editionYear = messages.StringField(14)
     donor = messages.StringField(15)
     comments = messages.StringField(16)
+    createdBy = messages.StringField(17)
+    createdDate = messages.StringField(18)
+    lastUpdatedBy = messages.StringField(19)
+    lastUpdatedDate = messages.StringField(20)
+    reference = messages.BooleanField(21)
 
 class BookForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
