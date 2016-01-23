@@ -87,10 +87,11 @@
                     <td>{{book.author}}</td>
                     <td>{{book.language}}</td>
                     <td>
-                        <button class="btn btn-primary btn-xs" ng-click="checkout(book.sbId)" ng-show="book.dueDate == 'None'">
+                        <button class="btn btn-primary btn-xs" ng-click="checkout(book.sbId)" ng-show="book.dueDate == 'None' && !book.reference">
                         <i class="glyphicon glyphicon-shopping-cart"></i>Checkout
                         </button>
                         <span ng-show="book.dueDate != 'None'">Due on {{book.dueDate}}</span>
+                        <span ng-show="book.reference">Reference Book</span>
                     </td>
                 </tr>
                 </tbody>
