@@ -42,6 +42,31 @@ libraryApp.controllers.controller('CreateBookCtrl',
             return !bookForm.$invalid;
         };
 
+        $scope.getIsbnDetails = function() {
+            $.getJSON("https://www.googleapis.com/books/v1/volumes?q=" +
+                "isbn:" + $scope.book.isbn + "&key=AIzaSyDQ0_ejQT469L3YpenuqTaxl4bWRiHGou8",
+                function(data) {
+                    if (data.items && data.items.length>0)
+                    {
+                        $scope.$apply(function () {
+                            $scope.book.author = data.items[0].volumeInfo.authors[0];
+                            $scope.book.title = data.items[0].volumeInfo.title;
+                            $scope.book.publisher = data.items[0].volumeInfo.publisher;
+                            $scope.book.editionYear = data.items[0].volumeInfo.publishedDate;
+                            $scope.book.mediaType = data.items[0].volumeInfo.printType;
+                            $scope.book.category = data.items[0].volumeInfo.categories[0];
+                            switch (data.items[0].volumeInfo.language)
+                            {
+                                case 'en':
+                                    $scope.book.language = 'ENGLISH';
+                                    break;
+                            }
+                        });
+                    }
+                    console.log(data);
+                });
+        };
+
         /**
          * Invokes the book.createBook API.
          *
