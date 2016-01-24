@@ -40,7 +40,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
          */
         $scope.isValidBook = function (bookForm) {
             return !bookForm.$invalid;
-        }
+        };
 
         /**
          * Invokes the book.createBook API.
@@ -72,7 +72,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 
@@ -102,8 +102,8 @@ libraryApp.controllers.controller('EditBookCtrl',
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the book : '
-                            + $routeParams.bookId + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the book : ' +
+                            $routeParams.bookId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -122,7 +122,7 @@ libraryApp.controllers.controller('EditBookCtrl',
          */
         $scope.isValidBook = function (bookForm) {
             return !bookForm.$invalid;
-        }
+        };
 
         /**
          * Invokes the book.editBook API.
@@ -150,12 +150,12 @@ libraryApp.controllers.controller('EditBookCtrl',
                             $scope.messages = 'Book updated successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-                            $location.path('/books')
+                            $location.path('/books');
                         }
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 
@@ -185,8 +185,8 @@ libraryApp.controllers.controller('DeleteBookCtrl',
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the book : '
-                            + $routeParams.bookId + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the book : ' +
+                            $routeParams.bookId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -224,12 +224,12 @@ libraryApp.controllers.controller('DeleteBookCtrl',
                             $scope.messages = 'Book deleted successfully : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-                            $location.path('/books')
+                            $location.path('/books');
                         }
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 /**
@@ -251,7 +251,7 @@ libraryApp.controllers.controller('ShowBooksCtrl',
             $scope.books = [];
             $scope.cursor = "";
             $scope.getMoreBooks();
-        }
+        };
 
         $scope.getMoreBooks = function () {
             $scope.submitted = false;
@@ -288,13 +288,13 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                     });
                 }
             );
-        }
+        };
 
 
         $scope.dblClick = function(book)
         {
             $location.path('/books/edit/'+book.sbId);
-        }
+        };
     }
 );
 
@@ -321,7 +321,7 @@ libraryApp.controllers.controller('CreateStudentCtrl',
          */
         $scope.isValidStudent = function (studentForm) {
             return !studentForm.$invalid;
-        }
+        };
 
         /**
          * Invokes the library.createStudent API.
@@ -354,7 +354,7 @@ libraryApp.controllers.controller('CreateStudentCtrl',
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 /**
@@ -400,7 +400,7 @@ libraryApp.controllers.controller('EditStudentCtrl',
                 });
             });
 
-        }
+        };
 
         /**
          * Tests if $scope.student is valid.
@@ -409,7 +409,7 @@ libraryApp.controllers.controller('EditStudentCtrl',
          */
         $scope.isValidStudent = function (studentForm) {
             return !studentForm.$invalid;
-        }
+        };
 
         /**
          * Invokes the library.createStudent API.
@@ -442,7 +442,7 @@ libraryApp.controllers.controller('EditStudentCtrl',
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 /**
@@ -476,8 +476,8 @@ libraryApp.controllers.controller('DeleteStudentCtrl',
                     if (resp.error) {
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
-                        $scope.messages = 'Failed to get the student : '
-                            + $routeParams.studentId + ' ' + errorMessage;
+                        $scope.messages = 'Failed to get the student : ' +
+                            $routeParams.studentId + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -488,7 +488,7 @@ libraryApp.controllers.controller('DeleteStudentCtrl',
                 });
             });
 
-        }
+        };
 
         /**
          * Invokes the library.deleteStudent API.
@@ -521,7 +521,7 @@ libraryApp.controllers.controller('DeleteStudentCtrl',
                         $scope.submitted = true;
                     });
                 });
-        }
+        };
     }
 );
 /**
@@ -541,8 +541,8 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
 
         $scope.dblClick = function(student)
         {
-            $location.path('/students/checkout/'+student.sbId)
-        }
+            $location.path('/students/checkout/'+student.sbId);
+        };
 
         $scope.queryStudents = function () {
             $scope.submitted = false;
@@ -581,7 +581,7 @@ libraryApp.controllers.controller('ShowStudentsCtrl',
                     });
                 }
             );
-        }
+        };
 
     }
 );
@@ -666,7 +666,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
                             $scope.messages = 'Return succeeded : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-                            $scope.init()
+                            $scope.init();
                         }
                         $scope.submitted = true;
                     });
@@ -687,8 +687,8 @@ libraryApp.controllers.controller('CheckoutCtrl',
                         if (resp.error) {
                             // The request has failed.
                             var errorMessage = resp.error.message || '';
-                            $scope.messages = 'Failed to query books : '
-                                + errorMessage;
+                            $scope.messages = 'Failed to query books : ' +
+                                errorMessage;
                             $scope.alertStatus = 'warning';
                             $log.error($scope.messages );
                         } else {
@@ -711,7 +711,7 @@ libraryApp.controllers.controller('CheckoutCtrl',
                     });
                 }
             );
-        }
+        };
 
         $scope.checkout = function(bookId) {
             $scope.submitted = false;
@@ -736,13 +736,13 @@ libraryApp.controllers.controller('CheckoutCtrl',
                             $scope.messages = 'Successfully checked out book : ';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
-                            $scope.init()
+                            $scope.init();
                         }
                         $scope.submitted = true;
                     });
                 }
             );
-        }
+        };
     }
 );
 /**
@@ -796,9 +796,9 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                     });
                 }
             );
-        }
+        };
         $scope.checkin = function(book) {
-            var bookId = book.bookId
+            var bookId = book.bookId;
             $scope.submitted = false;
             $scope.loading = true;
             gapi.client.sblibrary.returnBook({sbId : bookId }).

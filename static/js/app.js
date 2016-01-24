@@ -82,7 +82,7 @@ app.filter('startFrom', function () {
      */
     var filter = function (data, start) {
         return data.slice(start);
-    }
+    };
     return filter;
 });
 
@@ -139,7 +139,7 @@ app.factory('oauth2Provider', function ($modal) {
     oauth2Provider.signOut = function () {
         gapi.auth.signOut();
         // Explicitly set the invalid access token in order to make the API calls fail.
-        gapi.auth.setToken({access_token: ''})
+        gapi.auth.setToken({access_token: ''});
         oauth2Provider.signedIn = false;
     };
 
