@@ -248,11 +248,17 @@ libraryApp.controllers.controller('ShowBooksCtrl',
         $scope.books = [];
 
         $scope.queryBooks = function () {
+            $scope.books = [];
+            $scope.cursor = "";
+            $scope.getMoreBooks();
+        }
+
+        $scope.getMoreBooks = function () {
             $scope.submitted = false;
             $scope.loading = true;
 
             gapi.client.sblibrary.queryBooks(
-                {sbId: $scope.searchId, name: $scope.searchTitle}
+                {sbId: $scope.searchId, name: $scope.searchTitle, cursor: $scope.cursor}
                 ).execute(function (resp) {
                     $scope.$apply(function () {
                         $scope.loading = false;
@@ -273,16 +279,17 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
-                            $scope.books = [];
                             angular.forEach(resp.items, function (book) {
                                 $scope.books.push(book);
                             });
+                            $scope.cursor = resp.cursor;
                         }
                         $scope.submitted = true;
                     });
                 }
             );
         }
+
 
         $scope.dblClick = function(book)
         {

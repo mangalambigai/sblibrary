@@ -15,6 +15,7 @@ from protorpc import remote
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
+from google.appengine.datastore.datastore_query import Cursor
 
 from models import Book, BookForm, BookForms
 from models import Student, StudentForm, StudentForms
@@ -25,6 +26,7 @@ from google.appengine.api import oauth
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
+PAGE_SIZE = 10
 
 GET_REQUEST = endpoints.ResourceContainer(
     message_types.VoidMessage,
@@ -34,7 +36,8 @@ GET_REQUEST = endpoints.ResourceContainer(
 QUERY_REQUEST = endpoints.ResourceContainer(
     message_types.VoidMessage,
     sbId=messages.StringField(1),
-    name=messages.StringField(2)
+    name=messages.StringField(2),
+    cursor=messages.StringField(3)
 )
 
 @endpoints.api( name='sblibrary',
@@ -103,13 +106,23 @@ class SbLibraryApi(remote.Service):
             q = q.filter( ndb.AND(
                 Book.sbId >= request.sbId.upper(),
                 Book.sbId < request.sbId.upper() + 'Z' ))
+            q = q.order(Book.sbId)
         elif request.name:
             q = q.filter( ndb.AND(
                 Book.title >= request.name.lower(),
                 Book.title < request.name.lower() + 'z'))
+            q = q.order(Book.title)
+
+        curs = Cursor(urlsafe=request.cursor)
+
+        books, nextcurs, more = q.fetch_page(PAGE_SIZE, start_cursor=curs)
+
+        nextcursor = None
+        if more and nextcurs:
+            nextcursor = nextcurs.urlsafe()
 
         return BookForms(items = [self._copyBookToForm(book) \
-            for book in q])
+            for book in books], cursor = nextcursor)
 
 
     @endpoints.method(BookForm, BookForm,

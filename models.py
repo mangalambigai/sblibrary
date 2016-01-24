@@ -97,6 +97,7 @@ class BookForm(messages.Message):
 class BookForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
     items = messages.MessageField(BookForm, 1, repeated = True)
+    cursor = messages.StringField(2)
 
 #Student models
 class Student(ndb.Model):
