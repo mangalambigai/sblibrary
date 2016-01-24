@@ -118,6 +118,7 @@ class StudentForm(messages.Message):
 class StudentForms(messages.Message):
     """BookForms - Multiple books outbound form message"""
     items = messages.MessageField(StudentForm, 1, repeated = True)
+    cursor = messages.StringField(2)
 
 #Checkout models
 class CheckoutForm(messages.Message):
@@ -134,6 +135,7 @@ class CheckoutForm(messages.Message):
 class CheckoutForms(messages.Message):
     """CheckoutForms - Multiple checkouts outbound form message"""
     items = messages.MessageField(CheckoutForm, 1, repeated = True)
+    cursor = messages.StringField(2)
 
 class CheckoutRequestForm(messages.Message):
     """CheckoutRequestForm - for checking out or returning book"""

@@ -246,13 +246,23 @@ class SbLibraryApi(remote.Service):
             q = q.filter( ndb.AND(
                 Student.sbId >= request.sbId,
                 Student.sbId < request.sbId + 'z' ))
+            q = q.order(Student.sbId)
         elif request.name:
             q = q.filter( ndb.AND(
                 Student.name >= request.name.lower(),
                 Student.name < request.name.lower() + 'z'))
+            q = q.order(Student.name)
+
+        curs = Cursor(urlsafe=request.cursor)
+
+        students, nextcurs, more = q.fetch_page(PAGE_SIZE, start_cursor=curs)
+
+        nextcursor = None
+        if more and nextcurs:
+            nextcursor = nextcurs.urlsafe()
 
         return StudentForms(items = [self._copyStudentToForm(student) \
-            for student in q])
+            for student in students], cursor = nextcursor)
 
 
     @endpoints.method(StudentForm, StudentForm,
@@ -391,13 +401,23 @@ class SbLibraryApi(remote.Service):
             q = q.filter( ndb.AND(
                 Book.sbId >= request.sbId.upper(),
                 Book.sbId < request.sbId.upper() + 'Z' ))
+            q = q.order(Book.sbId)
         elif request.name:
             q = q.filter( ndb.AND(
                 Book.title >= request.name.lower(),
                 Book.title < request.name.lower() + 'z'))
+            q = q.order(Book.title)
+
+        curs = Cursor(urlsafe=request.cursor)
+
+        books, nextcurs, more = q.fetch_page(PAGE_SIZE, start_cursor=curs)
+
+        nextcursor = None
+        if more and nextcurs:
+            nextcursor = nextcurs.urlsafe()
 
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
-            for checkout in q])
+            for checkout in books], cursor = nextcursor)
 
 
     @endpoints.method( GET_REQUEST, CheckoutForms,
