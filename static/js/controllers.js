@@ -33,6 +33,39 @@ libraryApp.controllers.controller('CreateBookCtrl',
          */
         $scope.book = $scope.book || {};
 
+        $scope.init = function() {
+
+        };
+
+        $scope.scanImage = function(files) {
+            console.log(URL.createObjectURL(files[0]));
+            var config = {
+                numOfWorkers: 1,
+                locate: true,
+                inputStream: {
+                    size: 640,
+                    singleChannel: false
+                },
+                decoder:{
+                    readers: ["ean_reader"]
+                },
+                locator: {
+                    patchSize: "large",
+                    halfSample: false
+                },
+                debug: false,
+                src: URL.createObjectURL(files[0])
+            };
+            Quagga.decodeSingle(config, function(result) {});
+        };
+
+        Quagga.onDetected(function(result) {
+            $scope.$apply(function() {
+                $scope.book.isbn = result.codeResult.code;
+
+            });
+            $scope.getIsbnDetails();
+        });
         /**
          * Tests if $scope.book is valid.
          * @param bookForm the form object from the create_book.html page.
@@ -43,6 +76,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
         };
 
         $scope.getIsbnDetails = function() {
+            console.log($scope.book.isbn);
             $.getJSON("https://www.googleapis.com/books/v1/volumes?q=" +
                 "isbn:" + $scope.book.isbn + "&key=AIzaSyDQ0_ejQT469L3YpenuqTaxl4bWRiHGou8",
                 function(data) {

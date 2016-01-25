@@ -11,7 +11,7 @@
  * Root app, which routes and specifies the partial html and controller depending on the url requested.
  *
  */
-var app = angular.module('sbLibraryApp',
+var app = angular.module('libraryApp',
     ['libraryControllers', 'ngRoute', 'ui.bootstrap']).
     config(['$routeProvider',
         function ($routeProvider) {
@@ -144,4 +144,21 @@ app.factory('oauth2Provider', function ($modal) {
     };
 
     return oauth2Provider;
+});
+
+app.directive('customOnChange', function() {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      var onChangeFunc = scope.$eval(attrs.customOnChange);
+      element.bind('change', function(event){
+        var files = event.target.files;
+        onChangeFunc(files);
+      });
+
+      element.bind('click', function(){
+        element.val('');
+      });
+    }
+  };
 });
