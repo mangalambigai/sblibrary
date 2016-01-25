@@ -34,7 +34,10 @@ libraryApp.controllers.controller('CreateBookCtrl',
         $scope.book = $scope.book || {};
 
         $scope.init = function() {
-
+            $(':file').filestyle({
+                buttonName: 'btn-primary',
+                buttonText: 'Scan ISBN',
+                buttonBefore: 'true'});
         };
 
         $scope.scanImage = function(files) {

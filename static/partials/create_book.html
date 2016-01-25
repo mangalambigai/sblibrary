@@ -9,75 +9,65 @@
             <img class="spinner" src="/img/ajax-loader.gif" ng-show="loading"/>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Add a book</h3>
-
+    <div class="row"  ng-init="init()">
+        <div class="col-md-8">
             <form class="form-horizontal" name="bookForm" novalidate role="form">
+                <fieldset>
+                <legend>Add a book to the library</legend>
                 <div class="form-group">
-                    <div class="col-sm-2"></div>
+                    <label for="isbnfile" class="col-sm-2"></label>
                     <div class="col-sm-10">
-                        <input type="file" capture ng-model="filename" custom-on-change="scanImage"/>
+                        <input type="file" class="filestyle" data-buttonText="Scan ISBN" data-buttonName="btn-primary" capture ng-model="filename" custom-on-change="scanImage"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="isbn" class="col-sm-2">ISBN</label>
-                    <div class="col-sm-4">
+                    <label for="isbn" class="col-sm-2 control-label">ISBN</label>
+                    <div class="col-sm-3">
                     <input id="isbn" type="text" name="volume" ng-model="book.isbn" class="form-control"/>
                     </div>
-                    <div class="col-sm-6">
-                    <button class = "btn-xs btn-primary" ng-click="getIsbnDetails()">Get Book Details</button>
+                    <div class="col-sm-7">
+                    <button class = "btn btn-primary" ng-click="getIsbnDetails()">Get Book Details</button>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="donor" class="col-sm-2">Donor</label>
+                    <label for="donor" class="col-sm-2 control-label">Donor</label>
                     <div class="col-sm-10">
                     <input id="donor" type="text" name="donor" ng-model="book.donor" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="reference" class="col-sm-2">Reference</label>
-                    <div class="col-sm-1">
-                    <input id="reference" type="checkbox" name="reference" ng-model="book.reference" class="form-control input-sm"/>
-                    </div>
-                    <div class="col-sm-9"><strong>(Can not be checked out)</strong>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="sbid" class="col-sm-2">Book ID<span class="required">*</span></label>
+                    <label for="sbid" class="col-sm-2 control-label">Book ID<span class="required">*</span></label>
                     <div class="col-sm-10">
                     <input id="sbid" type="text" name="sbid" ng-model="book.sbId" class="form-control" ng-required="true"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="title" class="col-sm-2">Title</label>
+                    <label for="title" class="col-sm-2 control-label">Title</label>
                     <div class="col-sm-10">
-                    <input id="title" type="text" name="title" ng-model="book.title" class="form-control"
-                           ng-required="true"/>
+                    <input id="title" type="text" name="title" ng-model="book.title" class="form-control" ng-required="true"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="volume" class="col-sm-2">Volume</label>
+                    <label for="volume" class="col-sm-2 control-label">Volume</label>
                     <div class="col-sm-10">
                     <input id="volume" type="text" name="volume" ng-model="book.volume" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="author" class="col-sm-2">Author</label>
+                    <label for="author" class="col-sm-2 control-label">Author</label>
                     <div class="col-sm-10">
                     <input id="author" type="text" ng-model="book.author" name="author" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="language" class="col-sm-2">Language</label>
+                    <label for="language" class="col-sm-2 control-label">Language</label>
                     <div class="col-sm-10">
                     <select id="language" ng-model="book.language" name="language" class="form-control">
                         <option value="ENGLISH">English</option>
@@ -93,23 +83,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="price" class="col-sm-2">Price</label>
+                    <label for="price" class="col-sm-2 control-label">Price</label>
                     <div class="col-sm-10">
                     <input id="price" type="text" name="price" ng-model="book.price" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes" class="col-sm-2">Notes</label>
+                    <label for="notes" class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
                     <input id="notes" type="text" name="notes" ng-model="book.notes" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="grade" class="col-sm-2">Suggested Grades:</label>
+                    <label for="grade" class="col-sm-2 control-label">Suggested Grades:</label>
                     <div class="col-sm-10">
-                    <select id="grade" type="text" name="grade" ng-model="book.suggestedGrade" class="form-control" multiple="true">
+                    <select id="grade" type="text" name="grade" ng-model="book.suggestedGrade" multiple="true" class="form-control">
                         <option value="K">Kindergarten</option>
                         <option value="GRADE1">Grade 1</option>
                         <option value="GRADE2">Grade 2</option>
@@ -124,21 +114,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="category" class="col-sm-2">Category</label>
+                    <label for="category" class="col-sm-2 control-label">Category</label>
                     <div class="col-sm-10">
                     <input id="category" type="text" name="category" ng-model="book.category" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="publisher" class="col-sm-2">Publisher</label>
+                    <label for="publisher" class="col-sm-2 control-label">Publisher</label>
                     <div class="col-sm-10">
                     <input id="publisher" type="text" name="publisher" ng-model="book.publisher" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="mediatype" class="col-sm-2">Media Type</label>
+                    <label for="mediatype" class="col-sm-2 control-label">Media Type</label>
                     <div class="col-sm-10">
                     <select id="mediatype" name="mediatype" ng-model="book.mediaType" class="form-control">
                         <option value="BOOK">Book</option>
@@ -148,26 +138,39 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editionyear" class="col-sm-2">Edition Year</label>
+                    <label for="editionyear" class="col-sm-2 control-label">Edition Year</label>
                     <div class="col-sm-10">
                     <input id="editionyear" type="text" name="editionyear" ng-model="book.editionYear" class="form-control"/>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="comments" class="col-sm-2">Comments</label>
+                    <label for="comments" class="col-sm-2 control-label">Comments</label>
                     <div class="col-sm-10">
                     <input id="comments" type="text" name="comments" ng-model="book.comments" class="form-control"/>
                     </div>
                 </div>
 
-                <button ng-click="createBook(bookForm)" class="btn btn-primary"
-                        ng-disabled="!isValidBook(bookForm) || loading">Create
-                </button>
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                    <input id="reference" type="checkbox" name="reference" ng-model="book.reference" > <strong>Reference (Can not be checked out)</strong>
+                    </div>
+                </div>
 
-                <a href="#/books">
-                    <button class="btn btn-primary">Back</button>
-                </a>
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button ng-click="createBook(bookForm)" class="btn btn-primary"
+                                ng-disabled="!isValidBook(bookForm) || loading">Create
+                        </button>
+                        <a href="#/books">
+                            <button class="btn btn-primary">Back</button>
+                        </a>
+                    </div>
+                </div>
+
+
             </form>
         </div>
     </div>
