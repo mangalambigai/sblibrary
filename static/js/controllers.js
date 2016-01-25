@@ -41,6 +41,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
         };
 
         $scope.scanImage = function(files) {
+            $scope.loading = true;
             console.log(URL.createObjectURL(files[0]));
             var config = {
                 numOfWorkers: 1,
@@ -59,16 +60,16 @@ libraryApp.controllers.controller('CreateBookCtrl',
                 debug: false,
                 src: URL.createObjectURL(files[0])
             };
-            Quagga.decodeSingle(config, function(result) {});
+            Quagga.decodeSingle(config, function(result) {
+                $scope.loading = false;
+                $scope.$apply(function() {
+                    $scope.book.isbn = result.codeResult.code;
+                    console.log(result.codeResult.code);
+                });
+                $scope.getIsbnDetails();
+            });
         };
 
-        Quagga.onDetected(function(result) {
-            $scope.$apply(function() {
-                $scope.book.isbn = result.codeResult.code;
-
-            });
-            $scope.getIsbnDetails();
-        });
         /**
          * Tests if $scope.book is valid.
          * @param bookForm the form object from the create_book.html page.
@@ -79,26 +80,68 @@ libraryApp.controllers.controller('CreateBookCtrl',
         };
 
         $scope.getIsbnDetails = function() {
-            console.log($scope.book.isbn);
+
+            $scope.book.isbn = $scope.book.isbn.replace(/-/g,'');
+            $scope.book.title = '';
+            $scope.book.publisher = '';
+            $scope.book.author = '';
+            $scope.book.editionYear = '';
+            $scope.book.mediaType = '';
+            $scope.book.category = '';
+            $scope.book.language = '';
+
+            $scope.loading = true;
+            $scope.notFound = false;
             $.getJSON("https://www.googleapis.com/books/v1/volumes?q=" +
                 "isbn:" + $scope.book.isbn + "&key=AIzaSyDQ0_ejQT469L3YpenuqTaxl4bWRiHGou8",
                 function(data) {
+                    $scope.loading = false;
                     if (data.items && data.items.length>0)
                     {
                         $scope.$apply(function () {
-                            $scope.book.author = data.items[0].volumeInfo.authors[0];
-                            $scope.book.title = data.items[0].volumeInfo.title;
-                            $scope.book.publisher = data.items[0].volumeInfo.publisher;
-                            $scope.book.editionYear = data.items[0].volumeInfo.publishedDate;
-                            $scope.book.mediaType = data.items[0].volumeInfo.printType;
-                            $scope.book.category = data.items[0].volumeInfo.categories[0];
-                            switch (data.items[0].volumeInfo.language)
+                            var volumeInfo = data.items[0].volumeInfo;
+                            if (volumeInfo.authors && volumeInfo.authors.length>0)
+                                $scope.book.author = volumeInfo.authors[0];
+                            $scope.book.title = volumeInfo.title;
+                            $scope.book.publisher = volumeInfo.publisher;
+                            $scope.book.editionYear = volumeInfo.publishedDate;
+                            $scope.book.mediaType = volumeInfo.printType;
+                            $scope.book.category = volumeInfo.categories[0];
+
+                            //https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+                            switch (volumeInfo.language)
                             {
                                 case 'en':
                                     $scope.book.language = 'ENGLISH';
                                     break;
+                                case 'ta':
+                                    $scope.book.language = 'TAMIL';
+                                    break;
+                                case 'hi':
+                                    $scope.book.language = 'HINDI';
+                                    break;
+                                case 'te':
+                                    $scope.book.language = 'TELUGU';
+                                    break;
+                                case 'mr':
+                                    $scope.book.language = 'MARATHI';
+                                    break;
+                                case 'gu':
+                                    $scope.book.language = 'GUJARATHI';
+                                    break;
+                                case 'kn':
+                                    $scope.book.language = 'KANNADA';
+                                    break;
+                                case 'sa':
+                                    $scope.book.language = 'SANSKRIT';
+                                    break;
+
+
                             }
                         });
+                    }
+                    else {
+                        $scope.notFound = true;
                     }
                     console.log(data);
                 });
