@@ -86,8 +86,6 @@ body {
     a {
         min-width: 48px;
         min-height: 48px;
-        padding-left: 10px;
-        padding-right: 10px;
     }
     .form-group-condensed button{
         margin: 10px;
