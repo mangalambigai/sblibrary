@@ -355,10 +355,13 @@ libraryApp.controllers.controller('ShowBooksCtrl',
         $scope.queryBooks = function () {
             $scope.books = [];
             $scope.cursor = "";
+            $scope.more = true;
             $scope.getMoreBooks();
         };
 
         $scope.getMoreBooks = function () {
+            if (!$scope.more || $scope.loading)
+                return;
             $scope.submitted = false;
             $scope.loading = true;
 
@@ -388,6 +391,7 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                                 $scope.books.push(book);
                             });
                             $scope.cursor = resp.cursor;
+                            $scope.more = resp.cursor ? true: false;
                         }
                         $scope.submitted = true;
                     });
