@@ -16,13 +16,20 @@
         </div>
     </div>
 
-    <form class="form-inline" name="filterForm">
+    <tabset id="show-checkouts-tab" justified="true">
+        <tab select="tabAllSelected()" heading="All"></tab>
+        <tab select="tabOverdues()" heading="Overdues"></tab>
+    </tabset>
+
+    <br>
+
+    <form class="form-inline" name="filterForm" ng-show="!overDuesOnly">
         <div class="form-group-condensed">
-            <label for="idsearch">Enter Id:</label>
+            <label for="idsearch" >Enter Id:</label>
             <input name="idsearch" id="idsearch" type="text" ng-model="searchId" class="form-control"/>
 
-            <label for="titlesearch">or Enter Title:</label>
-            <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control"/>
+            <label for="titlesearch" >or Enter Title:</label>
+            <input name="titlesearch" id="titlesearch" type="text" ng-model="searchTitle" class="form-control" />
 
             <button ng-click="queryCheckouts();" class="btn btn-primary">
                 <i class="glyphicon glyphicon-search"></i> Search

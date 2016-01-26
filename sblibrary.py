@@ -42,6 +42,14 @@ QUERY_REQUEST = endpoints.ResourceContainer(
     cursor=messages.StringField(3)
 )
 
+CHECKOUT_QUERY_REQUEST = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    sbId=messages.StringField(1),
+    name=messages.StringField(2),
+    cursor=messages.StringField(3),
+    overDue=messages.BooleanField(4)
+)
+
 @endpoints.api( name='sblibrary',
                 version='v1',
                 allowed_client_ids=[WEB_CLIENT_ID, WEB_CLIENT_ID_WALPOLE, API_EXPLORER_CLIENT_ID],
@@ -421,14 +429,16 @@ class SbLibraryApi(remote.Service):
         return CheckoutForms(items = [self._copyCheckoutToForm(checkout) \
             for checkout in q])
 
-    @endpoints.method(QUERY_REQUEST, CheckoutForms,
+    @endpoints.method(CHECKOUT_QUERY_REQUEST, CheckoutForms,
         path='queryCheckouts', http_method='GET', name='queryCheckouts')
     def queryCheckouts(self, request):
         """get checkout records"""
         self._ensureAdmin()
         q = Book.query(Book.checkedOut == True)
 
-        if request.sbId:
+        if request.overDue == True:
+            q = q.filter(Book.dueDate<date.today())
+        elif request.sbId:
             q = q.filter( ndb.AND(
                 Book.sbId >= request.sbId.upper(),
                 Book.sbId < request.sbId.upper() + 'Z' ))

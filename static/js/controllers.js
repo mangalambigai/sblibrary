@@ -419,6 +419,8 @@ libraryApp.controllers.controller('ShowBooksCtrl',
                                 count = resp.items.length;
                             $scope.messages = 'Search returned '+
                                 count + ' books.';
+                            if (resp.cursor)
+                                $scope.messages += ' More available.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -904,12 +906,33 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
          */
         $scope.checkouts = [];
 
+        $scope.overDuesOnly = false;
+
+        $scope.tabAllSelected = function () {
+            $scope.overDuesOnly = false;
+        };
+
+        $scope.tabOverdues = function() {
+            $scope.overDuesOnly = true;
+            queryCheckouts();
+        };
+
         $scope.queryCheckouts = function () {
+            $scope.loading = false;
+            $scope.cursor = '';
             $scope.checkouts = [];
+        };
+
+        $scope.getMore = function() {
+            if ($scope.loading)
+                return;
             $scope.submitted = false;
             $scope.loading = true;
             gapi.client.sblibrary.queryCheckouts({
-                sbId: $scope.searchId, name: $scope.searchTitle
+                sbId: $scope.searchId,
+                name: $scope.searchTitle,
+                overDue: $scope.overDuesOnly,
+                cursor: $scope.cursor
             }).
                 execute(function (resp) {
                     $scope.$apply(function () {
@@ -928,6 +951,8 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                                 count = resp.items.length;
                             $scope.messages = 'Currently there are '+
                                 count + ' books checked out.';
+                            if (resp.cursor)
+                                $scope.messages += 'More available.';
                             $scope.alertStatus = 'success';
                             $log.info($scope.messages);
 
@@ -935,6 +960,7 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
                             angular.forEach(resp.items, function (checkout) {
                                 $scope.checkouts.push(checkout);
                             });
+                            $scope.cursor = resp.cursor;
                         }
                         $scope.submitted = true;
                     });
