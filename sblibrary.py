@@ -23,6 +23,8 @@ from models import CheckoutForm, CheckoutForms, CheckoutRequestForm
 
 from settings import WEB_CLIENT_ID, WEB_CLIENT_ID_WALPOLE
 from google.appengine.api import oauth
+import urllib2, json
+from google.appengine.api import urlfetch
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
@@ -47,8 +49,37 @@ QUERY_REQUEST = endpoints.ResourceContainer(
 class SbLibraryApi(remote.Service):
     """SB Library API v0.1"""
 
+    @endpoints.method(GET_REQUEST, BookForm,
+        path='getIsbnDetails', http_method='GET', name='getIsbnDetails')
+    def getIsbnDetails(self, request):
+        """get a Book"""
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
+
+        url = "http://isbndb.com/api/v2/json/N295NRWI/book/"+request.sbId
+        result = urlfetch.fetch(url)
+        logging.info(result.status_code)
+        if  result.status_code == 200:
+            logging.info(result.content)
+            bookdata = json.loads(result.content)
+            bf = BookForm()
+            bf.title = bookdata["data"][0]["title_latin"]
+            bf.publisher = bookdata["data"][0]["publisher_name"]
+            bf.editionYear = bookdata["data"][0]["edition_info"]
+            bf.isbn = request.sbId
+            bf.author = bookdata["data"][0]["author_data"][0]["name"]
+            bf.language = bookdata["data"][0]["language"]
+            return bf
+        else:
+            logging.error(result)
+            raise endpoints.NotFoundException(
+                'No book found with Isbn Id: %s' % request.sbId)
+
+
     def _ensureAdmin(self):
         user = endpoints.get_current_user()
+
         if user:
             logging.info('user logged in as ' + user.email())
             if not oauth.is_current_user_admin(EMAIL_SCOPE):

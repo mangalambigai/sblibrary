@@ -79,8 +79,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
             return !bookForm.$invalid;
         };
 
-        $scope.getIsbnDetails = function() {
-
+        $scope.getGoogleBooksDetails = function() {
             $scope.book.isbn = $scope.book.isbn.replace(/-/g,'');
             $scope.book.title = '';
             $scope.book.publisher = '';
@@ -92,6 +91,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
 
             $scope.loading = true;
             $scope.notFound = false;
+
             $.getJSON("https://www.googleapis.com/books/v1/volumes?q=" +
                 "isbn:" + $scope.book.isbn + "&key=AIzaSyDQ0_ejQT469L3YpenuqTaxl4bWRiHGou8",
                 function(data) {
@@ -145,6 +145,41 @@ libraryApp.controllers.controller('CreateBookCtrl',
                     }
                     console.log(data);
                 });
+        };
+
+        $scope.getIsbnDetails = function() {
+
+            $scope.book.isbn = $scope.book.isbn.replace(/-/g,'');
+            $scope.book.title = '';
+            $scope.book.publisher = '';
+            $scope.book.author = '';
+            $scope.book.editionYear = '';
+            $scope.book.mediaType = '';
+            $scope.book.category = '';
+            $scope.book.language = '';
+
+            $scope.loading = true;
+            $scope.notFound = false;
+
+            gapi.client.sblibrary.getIsbnDetails({sbId: $scope.book.isbn})
+                .execute(function (resp) {
+                $scope.$apply(function () {
+                    $scope.loading = false;
+                    if (resp.error) {
+                        // The request has failed.
+                        var errorMessage = resp.error.message || '';
+                        $scope.messages = 'Failed to get the book : ' +
+                            $routeParams.bookId + ' ' + errorMessage;
+                        $scope.alertStatus = 'warning';
+                        $log.error($scope.messages);
+                    } else {
+                        // The request has succeeded.
+                        $scope.alertStatus = 'success';
+                        $scope.book.title = resp.result.title;
+                    }
+                });
+            });
+
         };
 
         /**

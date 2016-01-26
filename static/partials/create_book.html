@@ -26,8 +26,11 @@
                     <div class="col-sm-5">
                     <input id="isbn" type="text" name="volume" ng-model="book.isbn" class="form-control"/>
                     </div>
-                    <div class="col-sm-5">
-                    <button class = "btn btn-primary" ng-click="getIsbnDetails()">Get Book Details</button>
+                    <div class="col-sm-2">
+                    <button class = "btn btn-primary" ng-click="getIsbnDetails()">ISBNDB</button>
+                    </div>
+                    <div class="col-sm-3">
+                    <button class = "btn btn-primary" ng-click="getGoogleBooksDetails()">Google Books</button>
                     <img class="spinner" src="/img/ajax-loader.gif" ng-show="loading"/>
                     <span ng-show="notFound">Book not found on Google books</span>
                     </div>
