@@ -169,7 +169,7 @@ libraryApp.controllers.controller('CreateBookCtrl',
                         // The request has failed.
                         var errorMessage = resp.error.message || '';
                         $scope.messages = 'Failed to get the book : ' +
-                            $routeParams.bookId + ' ' + errorMessage;
+                            $scope.book.isbn + ' ' + errorMessage;
                         $scope.alertStatus = 'warning';
                         $log.error($scope.messages);
                     } else {
@@ -914,13 +914,14 @@ libraryApp.controllers.controller('ShowCheckoutsCtrl',
 
         $scope.tabOverdues = function() {
             $scope.overDuesOnly = true;
-            queryCheckouts();
+            $scope.queryCheckouts();
         };
 
         $scope.queryCheckouts = function () {
             $scope.loading = false;
             $scope.cursor = '';
             $scope.checkouts = [];
+            $scope.getMore();
         };
 
         $scope.getMore = function() {
