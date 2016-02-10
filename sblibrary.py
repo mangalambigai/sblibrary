@@ -72,12 +72,15 @@ class SbLibraryApi(remote.Service):
             logging.info(result.content)
             bookdata = json.loads(result.content)
             bf = BookForm()
-            bf.title = bookdata["data"][0]["title_latin"]
-            bf.publisher = bookdata["data"][0]["publisher_name"]
-            bf.editionYear = bookdata["data"][0]["edition_info"]
-            bf.isbn = request.sbId
-            bf.author = bookdata["data"][0]["author_data"][0]["name"]
-            bf.language = bookdata["data"][0]["language"]
+            if bookdata["data"] and bookdata["data"][0]:
+                bf.title = bookdata["data"][0]["title_latin"]
+                bf.publisher = bookdata["data"][0]["publisher_name"]
+                bf.editionYear = bookdata["data"][0]["edition_info"]
+                bf.isbn = request.sbId
+                if bookdata["data"][0]["author_data"] and bookdata["data"][0]["author_data"][0]:
+                    bf.author = bookdata["data"][0]["author_data"][0]["name"]
+                #TODO: fill language
+                #bf.language = bookdata["data"][0]["language"]
             return bf
         else:
             logging.error(result)
