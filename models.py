@@ -66,7 +66,7 @@ class Book(ndb.Model):
     createdBy = ndb.StringProperty(indexed = False)
     createdDate = ndb.DateProperty(indexed = False)
     lastUpdatedBy = ndb.StringProperty(indexed = False)
-    lastUpdatedDate = ndb.StringProperty(indexed = False)
+    lastUpdatedDate = ndb.DateProperty(indexed = False)
     reference = ndb.BooleanProperty(indexed = False)
 
 
