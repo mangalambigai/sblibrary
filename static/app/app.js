@@ -17,43 +17,43 @@ var app = angular.module('libraryApp',
         function ($routeProvider) {
             $routeProvider.
                 when('/books', {
-                    templateUrl: '/partials/show_books.html',
+                    templateUrl: '/app/showbooksview/show_books.html',
                     controller: 'ShowBooksCtrl'
                 }).
                 when('/books/create', {
-                    templateUrl: '/partials/create_book.html',
+                    templateUrl: '/app/createbookview/create_book.html',
                     controller: 'CreateBookCtrl'
                 }).
                 when('/books/edit/:bookId', {
-                    templateUrl: '/partials/edit_book.html',
+                    templateUrl: '/app/editbookview/edit_book.html',
                     controller: 'EditBookCtrl'
                 }).
                 when('/books/delete/:bookId', {
-                    templateUrl: '/partials/delete_book.html',
+                    templateUrl: '/app/deletebookview/delete_book.html',
                     controller: 'DeleteBookCtrl'
                 }).
                 when('/students', {
-                    templateUrl: '/partials/show_students.html',
+                    templateUrl: '/app/showstudentsview/show_students.html',
                     controller: 'ShowStudentsCtrl'
                 }).
                 when('/students/create', {
-                    templateUrl: '/partials/create_student.html',
+                    templateUrl: '/app/createstudentview/create_student.html',
                     controller: 'CreateStudentCtrl'
                 }).
                 when('/students/edit/:studentId', {
-                    templateUrl: '/partials/edit_student.html',
+                    templateUrl: '/app/editstudentview/edit_student.html',
                     controller: 'EditStudentCtrl'
                 }).
                 when('/students/delete/:studentId', {
-                    templateUrl: '/partials/delete_student.html',
+                    templateUrl: '/app/deletestudentview/delete_student.html',
                     controller: 'DeleteStudentCtrl'
                 }).
                 when('/checkouts', {
-                    templateUrl: '/partials/show_checkouts.html',
+                    templateUrl: '/app/showcheckoutsview/show_checkouts.html',
                     controller: 'ShowCheckoutsCtrl'
                 }).
                 when('/students/checkout/:studentId', {
-                    templateUrl: '/partials/checkout.html',
+                    templateUrl: '/app/checkout/checkout.html',
                     controller: 'CheckoutCtrl'
                 }).
                 when('/', {
